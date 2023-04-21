@@ -1,0 +1,103 @@
+---
+title: "Appendix for Part1"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+pilot survey to determine n (our sample size) 
+```{r}
+set.seed(2023)
+sample(1:1243,10,replace = F)
+```
+
+So our pilot survey house numbers are shown above.
+We will use Y to denote number of people lived in a house  
+X to denote the summation of wealth of people lived in a house
+```{r}
+pilot<-read.csv("pilot.csv")
+Y_pilot<-pilot$population
+X_pilot<-pilot$wealth
+#Let v denote the pre-sample estimate for sigma
+v_Y<-var(Y_pilot)
+v_X<-var(X_pilot)
+N<-1229
+alpha<-0.05
+d1<-0.4; d2<-450; d3<-2000; d4<-2500000
+zsqaure<-qnorm(0.975)*qnorm(0.975) 
+n1<-1/(1/N+d1^2/(v_Y*zsqaure)*(1-1/N)) 
+n2<-1/(1/N+d2^2/(N^2*v_Y*zsqaure)*(1-1/N)) 
+n3<-1/(1/N+d3^2/(v_X*zsqaure)*(1-1/N))
+n4<-1/(1/N+d4^2/(N^2*v_X*zsqaure)*(1-1/N)) 
+n1;n2;n3;n4
+n<-85 #our sample size
+```
+sample from the houses  
+```{r}
+set.seed(3011)
+survey<-sample(1:1229,n)
+survey
+```
+
+find the sample means and their variance
+
+```{r}
+library(ggplot2)
+sampledata<-read.csv("sampledata.csv")
+sampledata
+Y<-sampledata$population
+#put the number of people lived in the house of our sample into Y
+X<-sampledata$wealth
+#put the summation of wealth of people lived in a house of our sample into X
+max(Y); min(Y)
+yv<-NULL
+for (i in 0:7)  yv<-c(yv,length(Y[Y==i]) )
+max(X); min(X)
+xv<-NULL
+for (i in 0:11)  xv<-c(xv,length(X[X>=(2000*i) & X<=(2000*(i+1))]) )
+dfy=data.frame(Population=seq(0:7),count=yv)
+par(mfrow=c(2,2))
+ggplot(data=dfy,mapping = aes(x=Population,y=count))+geom_bar(stat = "identity")
+ggplot(data=sampledata,mapping = aes(x=wealth))+geom_histogram(bins = 11)
+qqnorm(Y)
+qqline(Y, col="blue")
+qqnorm(X)
+qqline(X, col="blue")
+Y_bar<-mean(Y)
+Y_bar; var(Y)
+var_Y_bar<-(1-n/N)*var(Y)/n
+var_Y_bar
+X_bar<-mean(X)
+X_bar; var(X)
+var_X_bar<-(1-n/N)*var(X)/n
+var_X_bar
+```
+
+use the above values to calculate the estimator of total population and total wealth and their corresponding variance  
+let tau_Y denote the total population  
+let tau_X denote the total wealth
+```{r}
+tau_Y_head<-N*Y_bar
+tau_Y_head
+var_tau_Y_head<-N^2*(1-n/N)*var(Y)/n
+var_tau_Y_head
+#CI for total population 
+tau_Y_head+qnorm(0.975)*sqrt(var_tau_Y_head)
+tau_Y_head-qnorm(0.975)*sqrt(var_tau_Y_head)
+tau_X_head<-N*X_bar
+tau_X_head
+var_tau_X_head<-N^2*(1-n/N)*var(X)/n
+var_tau_X_head
+#CI for total wealth
+tau_X_head+qnorm(0.975)*sqrt(var_tau_X_head)
+tau_X_head-qnorm(0.975)*sqrt(var_tau_X_head)
+```
+
+
+
+
+
+

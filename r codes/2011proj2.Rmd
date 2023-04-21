@@ -1,0 +1,1817 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(readxl)
+```
+
+
+```{r}
+# do not run this cell
+# snowdell=read_excel("/Users/jiangyunhui/Downloads/ironbard/SNOWDELL OBSERVATORIUM.xlsx")
+# holst=read_excel("/Users/jiangyunhui/Downloads/ironbard/HOLST OBSERVATORIUM.xlsx")
+# carsten=read_excel("/Users/jiangyunhui/Downloads/ironbard/CARSTEN CLIMATE STATION.xlsx")
+# abramsen=read_excel("/Users/jiangyunhui/Downloads/ironbard/ABRAMSEN CLIMATE STATION.xlsx")
+```
+
+```{r}
+# run this section to input data
+# snowdell=read_excel("SNOWDELL OBSERVATORIUM.xlsx")
+# holst=read_excel("HOLST OBSERVATORIUM.xlsx")
+# carsten=read_excel("CARSTEN CLIMATE STATION.xlsx")
+# abramsen=read_excel("ABRAMSEN CLIMATE STATION.xlsx")
+```
+
+packages
+```{r}
+install.packages("rtrend")
+install.packages("Kendall")
+install.packages("rkt")
+```
+```{r}
+# Seasonal Kendall test:
+library(rtrend)
+library(Kendall)
+library(rkt)
+library(zoo)
+library(trend)
+library(wql)
+```
+
+
+snowdell
+```{r}
+#snowdell.temp
+snowdell.temp=snowdell$`Max Temp (°C)`
+snowdell.temp.ts=ts(snowdell.temp,frequency = 28)
+#SeasonalMannKendall(snowdell.temp.ts)
+smk.sn.temp=smk.test(snowdell.temp.ts)
+summary(smk.sn.temp)
+```
+
+```{r}
+#snowdell.season.temp
+snowdell.season.temp=apply(matrix(snowdell.temp[4:(floor((length(snowdell.temp)-3)/7)*7)],ncol=7,byrow = T),1,mean)
+snowdell.season.temp.ts=ts(snowdell.season.temp,frequency = 4)
+smk.sn.sea.temp=smk.test(snowdell.season.temp.ts)
+summary(smk.sn.sea.temp)
+```
+
+```{r}
+#snowdell.rf
+snowdell.rf=snowdell$`Rainfall (mm)`
+snowdell.rf.ts=ts(snowdell.rf,frequency = 28)
+#SeasonalMannKendall(snowdell.temp.ts)
+smk.sn.rf=smk.test(snowdell.rf.ts)
+summary(smk.sn.rf)
+```
+
+
+```{r}
+#snowdell.season.rf
+snowdell.season.rf=apply(matrix(snowdell.rf[4:(floor((length(snowdell.rf)-3)/7)*7)],ncol=7,byrow = T),1,mean)
+snowdell.season.rf.ts=ts(snowdell.season.rf,frequency = 4)
+smk.sn.sea.rf=smk.test(snowdell.season.rf.ts)
+summary(smk.sn.sea.rf)
+```
+
+holst
+```{r}
+#holst.temp
+holst.temp=holst$`Max Temp (°C)`
+holst.temp.ts=ts(holst.temp,frequency = 28)
+#SeasonalMannKendall(snowdell.temp.ts)
+smk.ho.temp=smk.test(holst.temp.ts)
+summary(smk.ho.temp)
+```
+
+```{r}
+#holst.season.temp
+holst.season.temp=apply(matrix(holst.temp[4:(floor((length(holst.temp)-3)/7)*7)],ncol=7,byrow = T),1,mean)
+holst.season.temp.ts=ts(holst.season.temp,frequency = 4)
+smk.ho.sea.temp=smk.test(holst.season.temp.ts)
+summary(smk.ho.sea.temp)
+```
+
+```{r}
+#holst.rf
+holst.rf=holst$`Rainfall (mm)`
+holst.rf.ts=ts(holst.rf,frequency = 28)
+#SeasonalMannKendall(snowdell.temp.ts)
+smk.ho.rf=smk.test(holst.rf.ts)
+summary(smk.ho.rf)
+```
+
+```{r}
+#holst.season.rf
+holst.season.rf=apply(matrix(holst.rf[4:(floor((length(holst.rf)-3)/7)*7)],ncol=7,byrow = T),1,sum)
+holst.season.rf.ts=ts(holst.season.rf,frequency = 4)
+smk.ho.sea.rf=smk.test(holst.season.rf.ts)
+summary(smk.ho.sea.rf)
+```
+
+carsten
+```{r}
+#carsten.temp
+carsten.temp=carsten$`Max Temp (°C)`
+carsten.temp.ts=ts(carsten.temp,frequency = 28)
+#SeasonalMannKendall(snowdell.temp.ts)
+smk.ca.temp=smk.test(carsten.temp.ts)
+summary(smk.ca.temp)
+```
+
+```{r}
+#carsten.season.temp
+carsten.season.temp=apply(matrix(carsten.temp[4:(floor((length(carsten.temp)-3)/7)*7)],ncol=7,byrow = T),1,mean)
+carsten.season.temp.ts=ts(carsten.season.temp,frequency = 4)
+smk.ca.sea.temp=smk.test(carsten.season.temp.ts)
+summary(smk.ca.sea.temp)
+```
+
+```{r}
+#carsten.rf
+carsten.rf=carsten$`Rainfall (mm)`
+carsten.rf.ts=ts(carsten.rf,frequency = 28)
+#SeasonalMannKendall(snowdell.temp.ts)
+smk.ca.rf=smk.test(carsten.rf.ts)
+summary(smk.ca.rf)
+```
+
+```{r}
+#carsten.season.rf
+carsten.season.rf=apply(matrix(carsten.rf[4:(floor((length(carsten.rf)-3)/7)*7)],ncol=7,byrow = T),1,sum)
+carsten.season.rf.ts=ts(carsten.season.rf,frequency = 4)
+smk.ca.sea.rf=smk.test(carsten.season.rf.ts)
+summary(smk.ca.sea.rf)
+```
+
+abramsen
+```{r}
+#abramsen.temp
+abramsen.temp=abramsen$`Max Temp (°C)`
+abramsen.temp.ts=ts(abramsen.temp,frequency = 28)
+#SeasonalMannKendall(snowdell.temp.ts)
+smk.ab.temp=smk.test(abramsen.temp.ts)
+summary(smk.ab.temp)
+```
+
+```{r}
+#abramsen.season.temp
+abramsen.season.temp=apply(matrix(abramsen.temp[4:(floor((length(abramsen.temp)-3)/7)*7)],ncol=7,byrow = T),1,mean)
+abramsen.season.temp.ts=ts(abramsen.season.temp,frequency = 4)
+smk.ab.sea.temp=smk.test(abramsen.season.temp.ts)
+summary(smk.ab.sea.temp)
+```
+
+```{r}
+#abramsen.rf
+abramsen.rf=abramsen$`Rainfall (mm)`
+abramsen.rf.ts=ts(abramsen.rf,frequency = 28)
+#SeasonalMannKendall(snowdell.temp.ts)
+smk.ab.rf=smk.test(abramsen.rf.ts)
+summary(smk.ab.rf)
+```
+
+```{r}
+#abramsen.season.rf
+abramsen.season.rf=apply(matrix(abramsen.rf[4:(floor((length(abramsen.rf)-3)/7)*7)],ncol=7,byrow = T),1,mean)
+abramsen.season.rf.ts=ts(abramsen.season.rf,frequency = 4)
+smk.ab.sea.rf=smk.test(abramsen.season.rf.ts)
+summary(smk.ab.sea.rf)
+```
+```{r}
+par(mfrow=c(1,1))
+plot(snowdell.season.temp[4*(1:283)-3],type="l",lwd=1,col="brown3",ylim=c(3,30),ylab="snowdell temp",xlab="year")
+lines(snowdell.season.temp[4*(1:283)-2],lwd=1,col="darkorange2")
+lines(snowdell.season.temp[4*(1:283)-1],lwd=1,col="royalblue3")
+lines(snowdell.season.temp[4*(1:282)],lwd=1,col="skyblue2")
+grid(nx = NA,
+     ny = NULL,
+     lty = "dashed", col = "gray", lwd = 1)
+```
+```{r}
+par(mfrow=c(1,1))
+plot(holst.season.temp[4*(1:283)-3],type="l",lwd=1,col="brown3",ylim=c(3,30),ylab="holst temp",xlab="year",xlim=c(0,220))
+lines(holst.season.temp[4*(1:283)-2],lwd=1,col="darkorange2")
+lines(holst.season.temp[4*(1:283)-1],lwd=1,col="royalblue3")
+lines(holst.season.temp[4*(1:282)],lwd=1,col="skyblue2")
+grid(nx = NA,
+     ny = NULL,
+     lty = "dashed", col = "gray", lwd = 1)
+```
+```{r}
+par(mfrow=c(1,1))
+plot(carsten.season.temp[4*(1:283)-3],type="l",lwd=1,col="brown3",ylim=c(3,30),ylab="carsten temp",xlab="year")
+lines(carsten.season.temp[4*(1:283)-2],lwd=1,col="darkorange2")
+lines(carsten.season.temp[4*(1:283)-1],lwd=1,col="royalblue3")
+lines(carsten.season.temp[4*(1:282)],lwd=1,col="skyblue2")
+grid(nx = NA,
+     ny = NULL,
+     lty = "dashed", col = "gray", lwd = 1)
+```
+```{r}
+par(mfrow=c(1,1))
+plot(abramsen.season.temp[4*(1:283)-3],type="l",lwd=1,col="brown3",ylim=c(3,30),ylab="abramsen temp",xlab="year",xlim=c(0,240))
+lines(abramsen.season.temp[4*(1:283)-2],lwd=1,col="darkorange2")
+lines(abramsen.season.temp[4*(1:283)-1],lwd=1,col="royalblue3")
+lines(abramsen.season.temp[4*(1:282)],lwd=1,col="skyblue2")
+grid(nx = NA,
+     ny = NULL,
+     lty = "dashed", col = "gray", lwd = 1)
+```
+
+summary
+```{r}
+summary.hypo.day.temp=array(NA,dim = c(2,4),dimnames = list(c("Z","H0 Hypothesis"),c("snowdell","holst","carsten","abramsen")))
+summary.hypo.sea.temp=array(NA,dim = c(2,4),dimnames = list(c("Z","H0 Hypothesis"),c("snowdell","holst","carsten","abramsen")))
+
+summary.hypo.day.rf=array(NA,dim = c(2,4),dimnames = list(c("Z","H0 Hypothesis"),c("snowdell","holst","carsten","abramsen")))
+summary.hypo.sea.rf=array(NA,dim = c(2,4),dimnames = list(c("Z","H0 Hypothesis"),c("snowdell","holst","carsten","abramsen")))
+
+summary.hypo.day.temp[1,]=c(smk.sn.temp$statistic,smk.ho.temp$statistic,smk.ca.temp$statistic,smk.ab.temp$statistic)
+summary.hypo.day.temp[2,]=c(smk.sn.temp$p.value,smk.ho.temp$p.value,smk.ca.temp$p.value,smk.ab.temp$p.value)<0.05
+
+summary.hypo.sea.temp[1,]=c(smk.sn.sea.temp$statistic,smk.ho.sea.temp$statistic,smk.ca.sea.temp$statistic,smk.ab.sea.temp$statistic)
+summary.hypo.sea.temp[2,]=c(smk.sn.sea.temp$p.value,smk.ho.sea.temp$p.value,smk.ca.sea.temp$p.value,smk.ab.sea.temp$p.value)<0.05
+
+summary.hypo.day.rf[1,]=c(smk.sn.rf$statistic,smk.ho.rf$statistic,smk.ca.rf$statistic,smk.ab.rf$statistic)
+summary.hypo.day.rf[2,]=c(smk.sn.rf$p.value,smk.ho.rf$p.value,smk.ca.rf$p.value,smk.ab.rf$p.value)<0.05
+
+summary.hypo.sea.rf[1,]=c(smk.sn.sea.rf$statistic,smk.ho.sea.rf$statistic,smk.ca.sea.rf$statistic,smk.ab.sea.rf$statistic)
+summary.hypo.sea.rf[2,]=c(smk.sn.sea.rf$p.value,smk.ho.sea.rf$p.value,smk.ca.sea.rf$p.value,smk.ab.sea.rf$p.value)<0.05
+```
+
+
+```{r}
+print("temperature, 28 seaseons:")
+summary.hypo.day.temp
+print("temperature, 4 seaseons:")
+summary.hypo.sea.temp
+print("precipitation, 28 seaseons:")
+summary.hypo.day.rf
+print("precipitation, 4 seaseons:")
+summary.hypo.sea.rf
+```
+plots
+
+```{r}
+par(mfcol=c(2,4))
+plot(smk.sn.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5),xlab="season (snowdell temp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.sn.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5),xlab="season (snowdell prcp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ho.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5),xlab="season (holst temp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ho.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (holst prcp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ca.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (cartsen temp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ca.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (cartsen prcp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ab.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (abramsen temp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ab.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (abramsen prcp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+
+```
+
+```{r}
+par(mfcol=c(2,4))
+plot(smk.sn.sea.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5),xlab="season (snowdell temp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.sn.sea.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5),xlab="season (snowdell prcp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ho.sea.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5),xlab="season (holst temp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ho.sea.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (holst prcp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ca.sea.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (cartsen temp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ca.sea.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (cartsen prcp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ab.sea.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (abramsen temp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ab.sea.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1),xlab="season (abramsen prcp)",ylab="Z")
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+```
+
+```{r}
+dev.new(width=50, height=25, unit="cm",noRStudioGD = TRUE)
+par(mfrow=c(2,4))
+
+plot(smk.sn.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.sn.sea.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.sn.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.sn.sea.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ho.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ho.sea.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,2.5))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ho.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ho.sea.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ca.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ca.sea.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ca.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ca.sea.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ab.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ab.sea.temp$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ab.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+plot(smk.ab.sea.rf$Zg,type="l",lwd=2,col="blue",ylim=c(-2.5,3.1))
+abline(h=1.96,lty="dashed",lwd=2,col="red")
+abline(h=-1.96,lty="dashed",lwd=2,col="red")
+grid(nx = NA,
+     ny = NULL,
+     lty = 1, col = "gray", lwd = 2)
+
+```
+
+visualize
+```{r}
+d=11
+smooth=function(x){
+  # Step 1: Estimate the trend
+  n=length(x)
+  # make empty vector to store trend
+  T1=rep(NA,n)
+  filter=rep(1/(d+1),d)
+  filter=c(1/2/(d+1),filter,1/2/(d+1))
+  # compute filtered values recursively
+  radius=(d-1)/2; start=1+radius+1; end=n-radius-1
+  for ( k in start:end) {
+  	T1[k]=filter%*%x[(k-radius-1):(k+radius+1)]
+  }
+  lines(T1,col="red",lty="dashed",lwd=2)
+}
+
+
+```
+
+```{r}
+#year mean
+snowdell.yr.temp=apply(matrix(snowdell.temp[1:(floor(length(snowdell.temp)/28)*28)],ncol=28,byrow = T),1,mean)
+holst.yr.temp=apply(matrix(holst.temp[1:(floor(length(holst.temp)/28)*28)],ncol=28,byrow = T),1,mean)
+carsten.yr.temp=apply(matrix(carsten.temp[1:(floor(length(carsten.temp)/28)*28)],ncol=28,byrow = T),1,mean)
+abramsen.yr.temp=apply(matrix(abramsen.temp[1:(floor(length(abramsen.temp)/28)*28)],ncol=28,byrow = T),1,mean)
+
+snowdell.yr.rf=apply(matrix(snowdell.rf[1:(floor(length(snowdell.rf)/28)*28)],ncol=28,byrow = T),1,mean)
+holst.yr.rf=apply(matrix(holst.rf[1:(floor(length(holst.rf)/28)*28)],ncol=28,byrow = T),1,mean)
+carsten.yr.rf=apply(matrix(carsten.rf[1:(floor(length(carsten.rf)/28)*28)],ncol=28,byrow = T),1,mean)
+abramsen.yr.rf=apply(matrix(abramsen.rf[1:(floor(length(abramsen.rf)/28)*28)],ncol=28,byrow = T),1,mean)
+```
+day mean
+```{r}
+snowdell.dmean.temp=apply(matrix(snowdell.temp[1:(floor(length(snowdell.temp)/28)*28)],ncol=28,byrow = T),2,mean)
+holst.dmean.temp=apply(matrix(holst.temp[1:(floor(length(holst.temp)/28)*28)],ncol=28,byrow = T),2,mean)
+carsten.dmean.temp=apply(matrix(carsten.temp[1:(floor(length(carsten.temp)/28)*28)],ncol=28,byrow = T),2,mean)
+abramsen.dmean.temp=apply(matrix(abramsen.temp[1:(floor(length(abramsen.temp)/28)*28)],ncol=28,byrow = T),2,mean)
+
+snowdell.dmean.rf=apply(matrix(snowdell.rf[1:(floor(length(snowdell.rf)/28)*28)],ncol=28,byrow = T),2,mean)
+holst.dmean.rf=apply(matrix(holst.rf[1:(floor(length(holst.rf)/28)*28)],ncol=28,byrow = T),2,mean)
+carsten.dmean.rf=apply(matrix(carsten.rf[1:(floor(length(carsten.rf)/28)*28)],ncol=28,byrow = T),2,mean)
+abramsen.dmean.rf=apply(matrix(abramsen.rf[1:(floor(length(abramsen.rf)/28)*28)],ncol=28,byrow = T),2,mean)
+```
+
+```{r}
+#decade mean
+snowdell.dec.temp=apply(matrix(snowdell.temp[1:(floor(length(snowdell.temp)/280)*280)],ncol=280,byrow = T),1,mean)
+holst.dec.temp=apply(matrix(holst.temp[1:(floor(length(holst.temp)/280)*280)],ncol=280,byrow = T),1,mean)
+carsten.dec.temp=apply(matrix(carsten.temp[1:(floor(length(carsten.temp)/280)*280)],ncol=280,byrow = T),1,mean)
+abramsen.dec.temp=apply(matrix(abramsen.temp[1:(floor(length(abramsen.temp)/280)*280)],ncol=280,byrow = T),1,mean)
+
+snowdell.dec.rf=apply(matrix(snowdell.rf[1:(floor(length(snowdell.rf)/280)*280)],ncol=280,byrow = T),1,mean)
+holst.dec.rf=apply(matrix(holst.rf[1:(floor(length(holst.rf)/280)*280)],ncol=280,byrow = T),1,mean)
+carsten.dec.rf=apply(matrix(carsten.rf[1:(floor(length(carsten.rf)/280)*280)],ncol=280,byrow = T),1,mean)
+abramsen.dec.rf=apply(matrix(abramsen.rf[1:(floor(length(abramsen.rf)/280)*280)],ncol=280,byrow = T),1,mean)
+```
+
+```{r}
+par(mfcol=c(2,4))
+plot(snowdell.dec.temp,type="l",xlab="dec",ylim=c(13,24))
+lines(holst.dec.temp,type="l",col="")
+lines(carsten.dec.temp,type="l")
+lines(abramsen.dec.temp,type="l")
+
+grid(nx = NA,
+     ny = NULL,
+     col = "gray", lwd = 1,lty="dashed")
+#smooth(snowdell.yr.temp)
+
+
+plot(snowdell.dec.rf,type="l",xlab="year",ylim=c(0,8))
+grid(nx = NA,
+     ny = NULL,
+     col = "gray", lwd = 1,lty="dashed")
+#smooth(snowdell.yr.rf)
+
+plot(holst.dec.temp,type="l",xlab="year",ylim=c(13,24))
+grid(nx = NA,
+     ny = NULL,
+     col = "gray", lwd = 1,lty="dashed")
+#smooth(holst.yr.temp)
+
+plot(holst.dec.rf,type="l",xlab="year",ylim=c(0,8))
+grid(nx = NA,
+     ny = NULL,
+     col = "gray", lwd = 1,lty="dashed")
+#smooth(holst.yr.rf)
+
+plot(carsten.dec.temp,type="l",xlab="year",ylim=c(13,24))
+grid(nx = NA,
+     ny = NULL,
+     col = "gray", lwd = 1,lty="dashed")
+#smooth(carsten.yr.temp)
+
+plot(carsten.dec.rf,type="l",xlab="year",ylim=c(0,8))
+grid(nx = NA,
+     ny = NULL,
+     col = "gray", lwd = 1,lty="dashed")
+#smooth(carsten.yr.rf)
+
+plot(abramsen.dec.temp,type="l",xlab="year",ylim=c(13,24))
+grid(nx = NA,
+     ny = NULL,
+     col = "gray", lwd = 1,lty="dashed")
+#smooth(abramsen.yr.temp)
+
+plot(abramsen.dec.rf,type="l",xlab="year",ylim=c(0,8))
+grid(nx = NA,
+     ny = NULL,
+     col = "gray", lwd = 1,lty="dashed")
+#smooth(abramsen.yr.rf)
+```
+```{r}
+mk.sn.yr.temp=mk.test(snowdell.yr.temp)
+mk.sn.yr.rf=mk.test(snowdell.yr.rf)
+mk.ho.yr.temp=mk.test(holst.yr.temp)
+mk.ho.yr.rf=mk.test(holst.yr.rf)
+mk.ca.yr.temp=mk.test(carsten.yr.temp)
+mk.ca.yr.rf=mk.test(carsten.yr.rf)
+mk.ab.yr.temp=mk.test(abramsen.yr.temp)
+mk.ab.yr.rf=mk.test(abramsen.yr.rf)
+
+summary.hypo.yr.temp=array(NA,dim = c(2,4),dimnames = list(c("p value","Z"),c("snowdell","holst","carsten","abramsen")))
+summary.hypo.yr.rf=array(NA,dim = c(2,4),dimnames = list(c("p value","Z"),c("snowdell","holst","carsten","abramsen")))
+
+summary.hypo.yr.temp[2,]=c(mk.sn.yr.temp$statistic,mk.ho.yr.temp$statistic,mk.ca.yr.temp$statistic,mk.ab.yr.temp$statistic)
+summary.hypo.yr.temp[1,]=c(mk.sn.yr.temp$p.value,mk.ho.yr.temp$p.value,mk.ca.yr.temp$p.value,mk.ab.yr.temp$p.value)
+
+summary.hypo.yr.rf[2,]=c(mk.sn.yr.rf$statistic,mk.ho.yr.rf$statistic,mk.ca.yr.rf$statistic,mk.ab.yr.rf$statistic)
+summary.hypo.yr.rf[1,]=c(mk.sn.yr.rf$p.value,mk.ho.yr.rf$p.value,mk.ca.yr.rf$p.value,mk.ab.yr.rf$p.value)
+```
+
+
+```{r}
+print("temperature:")
+summary.hypo.yr.temp
+print("precipitation:")
+summary.hypo.yr.rf
+```
+
+regional
+```{r}
+c(length(snowdell.yr.temp),length(holst.yr.rf),length(carsten.yr.temp),length(abramsen.yr.temp))-min(c(length(snowdell.yr.temp),length(holst.yr.rf),length(carsten.yr.temp),length(abramsen.yr.temp)))
+```
+
+
+```{r}
+reg.iron.yr.tp=as.vector(rbind(snowdell.yr.temp[73:length(snowdell.yr.temp)],holst.yr.temp,carsten.yr.temp[115:length(carsten.yr.temp)],abramsen.yr.temp[28:length(abramsen.yr.temp)]))
+
+reg.iron.yr.rf=as.vector(rbind(snowdell.yr.rf[73:length(snowdell.yr.rf)],holst.yr.rf,carsten.yr.rf[115:length(carsten.yr.rf)],abramsen.yr.rf[28:length(abramsen.yr.rf)]))
+
+reg.iron.yr.tp.ts=ts(reg.iron.yr.tp,frequency = 4)
+reg.iron.yr.rf.ts=ts(reg.iron.yr.rf,frequency = 4)
+
+smk.reg.iron.yr.tp=smk.test(reg.iron.yr.tp.ts)
+smk.reg.iron.yr.rf=smk.test(reg.iron.yr.rf.ts)
+
+summary.smk.reg.iron.yr=array(NA,dim=c(2,3),dimnames = list(c("temperature","precipitation"),c("p value", "H0","Z")))
+summary.smk.reg.iron.yr[1,]=c(smk.reg.iron.yr.tp$p.value,smk.reg.iron.yr.tp$null.value,smk.reg.iron.yr.tp$statistic)
+summary.smk.reg.iron.yr[2,]=c(smk.reg.iron.yr.rf$p.value,smk.reg.iron.yr.rf$null.value,smk.reg.iron.yr.rf$statistic)
+summary.smk.reg.iron.yr
+```
+
+```{r}
+d=11
+x=snowdell.yr.temp#[(365*5):(365*15)]
+# Step 1: Estimate the trend
+n=length(x)
+# make empty vector to store trend
+T1=rep(NA,n)
+filter=rep(1/(d+1),d)
+filter=c(1/2/(d+1),filter,1/2/(d+1))
+# compute filtered values recursively
+radius=(d-1)/2; start=1+radius+1; end=n-radius-1
+for ( k in start:end) {
+	T1[k]=filter%*%x[(k-radius-1):(k+radius+1)]
+}
+ts.plot(T1,ylab="Trend")
+
+```
+#
+```{r}
+library(XML)
+library(httr)
+library(RCurl)
+library(htm2txt)
+library(rvest)
+```
+
+```{r}
+# do not run this section
+#data1=read.csv("https://www.ncei.noaa.gov/orders/cdo/3292926.csv")
+data2=read.csv("https://www.ncei.noaa.gov/orders/cdo/3304163.csv")
+write.csv(data2,"/Users/jiangyunhui/Downloads/3304163.csv")
+
+```
+
+```{r}
+# run this section to input the data, file path may need to be change to your own.
+# data2=read.csv("3304163.csv")
+```
+
+```{r}
+#unique(data2$STATION)
+unique(data2$NAME)
+```
+```{r}
+data.sta.jem=data2[data2$NAME=="JEMEZ DAM, NM US",]
+data.sta.valley=data2[data2$NAME=="ALBUQUERQUE VALLEY, NM US",]
+data.sta.los=data2[data2$NAME=="LOS LUNAS 3 SSW, NM US",]
+data.sta.cor=data2[data2$NAME=="CORRALES, NM US",]
+data.sta.air=data2[data2$NAME=="ALBUQUERQUE INTERNATIONAL AIRPORT, NM US",]
+```
+
+```{r}
+data.sta.air.mod=cbind(data.sta.air$DATE,data.sta.air$PRCP,data.sta.air$SNOW,data.sta.air$TMAX,data.sta.air$TMIN,data.sta.air$TAVG)
+```
+
+
+```{r}
+#(as.numeric(data.sta.air.mod[1:(12*10),6])-32)*5/9
+par(mfrow=c(2,1))
+plot((as.numeric(data.sta.air.mod[1:(12*10),4])-32)*5/9,type="l",ylab="alb.tp",ylim=c(-5,40))
+plot(snowdell.temp[1:(28*10)],type="l",ylab="sn.tp",ylim=c(-5,40))
+```
+
+```{r}
+par(mfrow=c(2,1))
+plot(as.numeric(data.sta.air.mod[(12*35):(12*40),2]),type="l",ylab="alb.tp")
+abline(v=12*(1:5),col="red")
+plot(snowdell.rf[1:(28*5)],type="l",ylab="sn.tp")
+abline(v=28*(1:5),col="red")
+```
+```{r}
+mean(as.numeric(data.sta.jem$PRCP),na.rm = T)*12*25.4
+mean(as.numeric(data.sta.valley$PRCP),na.rm = T)*12*25.4
+mean(as.numeric(data.sta.los$PRCP),na.rm = T)*12*25.4
+mean(as.numeric(data.sta.cor$PRCP),na.rm = T)*12*25.4
+mean(as.numeric(data.sta.air$PRCP),na.rm = T)*12*25.4
+
+```
+
+```{r}
+matrix(data.sta.jem$DATE[1:348],ncol=12,nrow=29,byrow=T)
+```
+```{r}
+season.data.jem.temp=array(NA,dim=c(69,12),dimnames = list(c(paste0("year:",(1:69)+1953)),c(paste0("month:",1:12))))
+season.data.jem.prcp=array(NA,dim=c(69,12),dimnames = list(c(paste0("year:",(1:69)+1953)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:69){
+  for(j in 1:12){
+    if(j<10){
+      season.data.jem.temp[i,j]=as.numeric(paste0(data.sta.jem[data.sta.jem$DATE==paste0(i+1953,"-0",j),]$TMAX,""))
+      season.data.jem.prcp[i,j]=as.numeric(paste0(data.sta.jem[data.sta.jem$DATE==paste0(i+1953,"-0",j),]$PRCP,""))
+    }else{
+      season.data.jem.temp[i,j]=as.numeric(paste0(data.sta.jem[data.sta.jem$DATE==paste0(i+1953,"-",j),]$TMAX,""))
+      season.data.jem.prcp[i,j]=as.numeric(paste0(data.sta.jem[data.sta.jem$DATE==paste0(i+1953,"-",j),]$PRCP,""))
+    }
+  }
+}
+
+```
+```{r}
+season.data.valley.temp=array(NA,dim=c(32,12),dimnames = list(c(paste0("year:",(1:32)+1990)),c(paste0("month:",1:12))))
+season.data.valley.prcp=array(NA,dim=c(32,12),dimnames = list(c(paste0("year:",(1:32)+1990)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:32){
+  for(j in 1:12){
+    if(j<10){
+      season.data.valley.temp[i,j]=as.numeric(paste0(data.sta.valley[data.sta.valley$DATE==paste0(i+1990,"-0",j),]$TMAX,""))
+      season.data.valley.prcp[i,j]=as.numeric(paste0(data.sta.valley[data.sta.valley$DATE==paste0(i+1990,"-0",j),]$PRCP,""))
+    }else{
+      season.data.valley.temp[i,j]=as.numeric(paste0(data.sta.valley[data.sta.valley$DATE==paste0(i+1990,"-",j),]$TMAX,""))
+      season.data.valley.prcp[i,j]=as.numeric(paste0(data.sta.valley[data.sta.valley$DATE==paste0(i+1990,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.los.temp=array(NA,dim=c(67,12),dimnames = list(c(paste0("year:",(1:67)+1956)),c(paste0("month:",1:12))))
+season.data.los.prcp=array(NA,dim=c(67,12),dimnames = list(c(paste0("year:",(1:67)+1956)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:67){
+  for(j in 1:12){
+    if(j<10){
+      season.data.los.temp[i,j]=as.numeric(paste0(data.sta.los[data.sta.los$DATE==paste0(i+1956,"-0",j),]$TMAX,""))
+      season.data.los.prcp[i,j]=as.numeric(paste0(data.sta.los[data.sta.los$DATE==paste0(i+1956,"-0",j),]$PRCP,""))
+    }else{
+      season.data.los.temp[i,j]=as.numeric(paste0(data.sta.los[data.sta.los$DATE==paste0(i+1956,"-",j),]$TMAX,""))
+      season.data.los.prcp[i,j]=as.numeric(paste0(data.sta.los[data.sta.los$DATE==paste0(i+1956,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.cor.temp=array(NA,dim=c(43,12),dimnames = list(c(paste0("year:",(1:43)+1981)),c(paste0("month:",1:12))))
+season.data.cor.prcp=array(NA,dim=c(43,12),dimnames = list(c(paste0("year:",(1:43)+1981)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:43){
+  for(j in 1:12){
+    if(j<10){
+      season.data.cor.temp[i,j]=as.numeric(paste0(data.sta.cor[data.sta.cor$DATE==paste0(i+1981,"-0",j),]$TMAX,""))
+      season.data.cor.prcp[i,j]=as.numeric(paste0(data.sta.cor[data.sta.cor$DATE==paste0(i+1981,"-0",j),]$PRCP,""))
+    }else{
+      season.data.cor.temp[i,j]=as.numeric(paste0(data.sta.cor[data.sta.cor$DATE==paste0(i+1981,"-",j),]$TMAX,""))
+      season.data.cor.prcp[i,j]=as.numeric(paste0(data.sta.cor[data.sta.cor$DATE==paste0(i+1981,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.air.temp=array(NA,dim=c(84,12),dimnames = list(c(paste0("year:",(1:84)+1930)),c(paste0("month:",1:12))))
+season.data.air.prcp=array(NA,dim=c(84,12),dimnames = list(c(paste0("year:",(1:84)+1930)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:84){
+  for(j in 1:12){
+    if(j<10){
+      season.data.air.temp[i,j]=as.numeric(paste0(data.sta.air[data.sta.air$DATE==paste0(i+1930,"-0",j),]$TMAX,""))
+      season.data.air.prcp[i,j]=as.numeric(paste0(data.sta.air[data.sta.air$DATE==paste0(i+1930,"-0",j),]$PRCP,""))
+    }else{
+      season.data.air.temp[i,j]=as.numeric(paste0(data.sta.air[data.sta.air$DATE==paste0(i+1930,"-",j),]$TMAX,""))
+      season.data.air.prcp[i,j]=as.numeric(paste0(data.sta.air[data.sta.air$DATE==paste0(i+1930,"-",j),]$PRCP,""))
+    }
+  }
+}
+
+```
+```{r}
+mean.na.rm=function(x){mean(x,na.rm = T)}
+
+month.mean.jem.temp=apply(season.data.jem.temp,2,mean.na.rm)
+month.mean.valley.temp=apply(season.data.valley.temp,2,mean.na.rm)
+month.mean.los.temp=apply(season.data.los.temp,2,mean.na.rm)
+month.mean.cor.temp=apply(season.data.cor.temp,2,mean.na.rm)
+month.mean.air.temp=apply(season.data.air.temp,2,mean.na.rm)
+
+month.mean.jem.prcp=apply(season.data.air.prcp,2,mean.na.rm)
+month.mean.valley.prcp=apply(season.data.valley.prcp,2,mean.na.rm)
+month.mean.los.prcp=apply(season.data.los.prcp,2,mean.na.rm)
+month.mean.cor.prcp=apply(season.data.cor.prcp,2,mean.na.rm)
+month.mean.air.prcp=apply(season.data.air.prcp,2,mean.na.rm)
+```
+```{r}
+summary.albuq=array(NA,dim = c(5,10),dimnames = list(unique(data2$NAME),c("annual ave temp","annual cum prcp","spring ave temp","summer ave temp","autumn ave temp","winter ave temp","spring cum prcp","summer cum prcp","autumn cum prcp","winter cum prcp")))
+#summary.albuq
+```
+```{r}
+summary.albuq[1,]=c((mean(as.numeric(data.sta.jem$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.sta.jem$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.jem.temp[3:5])-32)*5/9,
+                    (mean(month.mean.jem.temp[6:8])-32)*5/9,
+                    (mean(month.mean.jem.temp[9:11])-32)*5/9,
+                    (mean(month.mean.jem.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.jem.prcp[3:5])*25.4,
+                    sum(month.mean.jem.prcp[6:8])*25.4,
+                    sum(month.mean.jem.prcp[9:11])*25.4,
+                    sum(month.mean.jem.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.albuq[2,]=c((mean(as.numeric(data.sta.cor$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.sta.cor$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.cor.temp[3:5])-32)*5/9,
+                    (mean(month.mean.cor.temp[6:8])-32)*5/9,
+                    (mean(month.mean.cor.temp[9:11])-32)*5/9,
+                    (mean(month.mean.cor.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.cor.prcp[3:5])*25.4,
+                    sum(month.mean.cor.prcp[6:8])*25.4,
+                    sum(month.mean.cor.prcp[9:11])*25.4,
+                    sum(month.mean.cor.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.albuq[3,]=c((mean(as.numeric(data.sta.valley$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.sta.valley$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.valley.temp[3:5])-32)*5/9,
+                    (mean(month.mean.valley.temp[6:8])-32)*5/9,
+                    (mean(month.mean.valley.temp[9:11])-32)*5/9,
+                    (mean(month.mean.valley.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.valley.prcp[3:5])*25.4,
+                    sum(month.mean.valley.prcp[6:8])*25.4,
+                    sum(month.mean.valley.prcp[9:11])*25.4,
+                    sum(month.mean.valley.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.albuq[4,]=c((mean(as.numeric(data.sta.air$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.sta.air$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.air.temp[3:5])-32)*5/9,
+                    (mean(month.mean.air.temp[6:8])-32)*5/9,
+                    (mean(month.mean.air.temp[9:11])-32)*5/9,
+                    (mean(month.mean.air.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.air.prcp[3:5])*25.4,
+                    sum(month.mean.air.prcp[6:8])*25.4,
+                    sum(month.mean.air.prcp[9:11])*25.4,
+                    sum(month.mean.air.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.albuq[5,]=c((mean(as.numeric(data.sta.los$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.sta.los$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.los.temp[3:5])-32)*5/9,
+                    (mean(month.mean.los.temp[6:8])-32)*5/9,
+                    (mean(month.mean.los.temp[9:11])-32)*5/9,
+                    (mean(month.mean.los.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.los.prcp[3:5])*25.4,
+                    sum(month.mean.los.prcp[6:8])*25.4,
+                    sum(month.mean.los.prcp[9:11])*25.4,
+                    sum(month.mean.los.prcp[c(12,1,2)])*25.4
+                    )
+```
+```{r}
+summary.albuq
+write.csv(summary.albuq,"/Users/jiangyunhui/Downloads/summary.albuq.csv")
+```
+
+
+```{r}
+data.dv=read.csv("https://www.ncei.noaa.gov/orders/cdo/3304161.csv")
+write.csv(data.dv,"/Users/jiangyunhui/Downloads/3304161.csv")
+
+# https://www.ncei.noaa.gov/orders/cdo/3304161.csv
+
+# https://www.ncei.noaa.gov/orders/cdo/3293629.csv
+```
+
+```{r}
+# run this section to input data
+# data.dv=read.csv("3304161.csv")
+```
+
+```{r}
+unique(data.dv$NAME)
+```
+```{r}
+data.dv.vna=data.dv[data.dv$NAME=="VAN NUYS AIRPORT, CA US",]
+data.dv.sre=data.dv[data.dv$NAME=="SANTA RITA EXPERIMENTAL RANGE, AZ US",]
+data.dv.jtc=data.dv[data.dv$NAME=="JOSHUA TREE, CA US",]
+data.dv.gv=data.dv[data.dv$NAME=="GREEN VALLEY, AZ US",]
+data.dv.co=data.dv[data.dv$NAME=="COLFAX, CA US",]
+data.dv.mvn=data.dv[data.dv$NAME=="MORONGO VALLEY NORTH, CA US",]
+data.dv.wvn=data.dv[data.dv$NAME=="WOODLAND HILLS PIERCE COLLEGE, CA US",]
+data.dv.nec=data.dv[data.dv$NAME=="NEVADA CITY, CA US",]
+```
+```{r}
+matrix(data.sta.jem$DATE[1:348],ncol=12,nrow=29,byrow=T)
+```
+```{r}
+season.data.vna.temp=array(NA,dim=c(75,12),dimnames = list(c(paste0("year:",(1:75)+1948)),c(paste0("month:",1:12))))
+season.data.vna.prcp=array(NA,dim=c(75,12),dimnames = list(c(paste0("year:",(1:75)+1948)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:75){
+  for(j in 1:12){
+    if(j<10){
+      season.data.vna.temp[i,j]=as.numeric(paste0(data.dv.vna[data.dv.vna$DATE==paste0(i+1948,"-0",j),]$TMAX,""))
+      season.data.vna.prcp[i,j]=as.numeric(paste0(data.dv.vna[data.dv.vna$DATE==paste0(i+1948,"-0",j),]$PRCP,""))
+    }else{
+      season.data.vna.temp[i,j]=as.numeric(paste0(data.dv.vna[data.dv.vna$DATE==paste0(i+1948,"-",j),]$TMAX,""))
+      season.data.vna.prcp[i,j]=as.numeric(paste0(data.dv.vna[data.dv.vna$DATE==paste0(i+1948,"-",j),]$PRCP,""))
+    }
+  }
+}
+
+```
+```{r}
+season.data.sre.temp=array(NA,dim=c(61,12),dimnames = list(c(paste0("year:",(1:61)+1949)),c(paste0("month:",1:12))))
+season.data.sre.prcp=array(NA,dim=c(61,12),dimnames = list(c(paste0("year:",(1:61)+1949)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:61){
+  for(j in 1:12){
+    if(j<10){
+      season.data.sre.temp[i,j]=as.numeric(paste0(data.dv.sre[data.dv.sre$DATE==paste0(i+1949,"-0",j),]$TMAX,""))
+      season.data.sre.prcp[i,j]=as.numeric(paste0(data.dv.sre[data.dv.sre$DATE==paste0(i+1949,"-0",j),]$PRCP,""))
+    }else{
+      season.data.sre.temp[i,j]=as.numeric(paste0(data.dv.sre[data.dv.sre$DATE==paste0(i+1949,"-",j),]$TMAX,""))
+      season.data.sre.prcp[i,j]=as.numeric(paste0(data.dv.sre[data.dv.sre$DATE==paste0(i+1949,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.jtc.temp=array(NA,dim=c(65,12),dimnames = list(c(paste0("year:",(1:65)+1958)),c(paste0("month:",1:12))))
+season.data.jtc.prcp=array(NA,dim=c(65,12),dimnames = list(c(paste0("year:",(1:65)+1958)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:65){
+  for(j in 1:12){
+    if(j<10){
+      season.data.jtc.temp[i,j]=as.numeric(paste0(data.dv.jtc[data.dv.jtc$DATE==paste0(i+1958,"-0",j),]$TMAX,""))
+      season.data.jtc.prcp[i,j]=as.numeric(paste0(data.dv.jtc[data.dv.jtc$DATE==paste0(i+1958,"-0",j),]$PRCP,""))
+    }else{
+      season.data.jtc.temp[i,j]=as.numeric(paste0(data.dv.jtc[data.dv.jtc$DATE==paste0(i+1958,"-",j),]$TMAX,""))
+      season.data.jtc.prcp[i,j]=as.numeric(paste0(data.dv.jtc[data.dv.jtc$DATE==paste0(i+1958,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.gv.temp=array(NA,dim=c(36,12),dimnames = list(c(paste0("year:",(1:36)+1987)),c(paste0("month:",1:12))))
+season.data.gv.prcp=array(NA,dim=c(36,12),dimnames = list(c(paste0("year:",(1:36)+1987)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:36){
+  for(j in 1:12){
+    if(j<10){
+      season.data.gv.temp[i,j]=as.numeric(paste0(data.dv.gv[data.dv.gv$DATE==paste0(i+1987,"-0",j),]$TMAX,""))
+      season.data.gv.prcp[i,j]=as.numeric(paste0(data.dv.gv[data.dv.gv$DATE==paste0(i+1987,"-0",j),]$PRCP,""))
+    }else{
+      season.data.gv.temp[i,j]=as.numeric(paste0(data.dv.gv[data.dv.gv$DATE==paste0(i+1987,"-",j),]$TMAX,""))
+      season.data.gv.prcp[i,j]=as.numeric(paste0(data.dv.gv[data.dv.gv$DATE==paste0(i+1987,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.co.temp=array(NA,dim=c(119,12),dimnames = list(c(paste0("year:",(1:119)+1904)),c(paste0("month:",1:12))))
+season.data.co.prcp=array(NA,dim=c(119,12),dimnames = list(c(paste0("year:",(1:119)+1904)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:119){
+  for(j in 1:12){
+    if(j<10){
+      season.data.co.temp[i,j]=as.numeric(paste0(data.dv.co[data.dv.co$DATE==paste0(i+1904,"-0",j),]$TMAX,""))
+      season.data.co.prcp[i,j]=as.numeric(paste0(data.dv.co[data.dv.co$DATE==paste0(i+1904,"-0",j),]$PRCP,""))
+    }else{
+      season.data.co.temp[i,j]=as.numeric(paste0(data.dv.co[data.dv.co$DATE==paste0(i+1904,"-",j),]$TMAX,""))
+      season.data.co.prcp[i,j]=as.numeric(paste0(data.dv.co[data.dv.co$DATE==paste0(i+1904,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.mvn.temp=array(NA,dim=c(15,12),dimnames = list(c(paste0("year:",(1:15)+2008)),c(paste0("month:",1:12))))
+season.data.mvn.prcp=array(NA,dim=c(15,12),dimnames = list(c(paste0("year:",(1:15)+2008)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:15){
+  for(j in 1:12){
+    if(j<10){
+      season.data.mvn.temp[i,j]=as.numeric(paste0(data.dv.mvn[data.dv.mvn$DATE==paste0(i+2008,"-0",j),]$TMAX,""))
+      season.data.mvn.prcp[i,j]=as.numeric(paste0(data.dv.mvn[data.dv.mvn$DATE==paste0(i+2008,"-0",j),]$PRCP,""))
+    }else{
+      season.data.mvn.temp[i,j]=as.numeric(paste0(data.dv.mvn[data.dv.mvn$DATE==paste0(i+2008,"-",j),]$TMAX,""))
+      season.data.mvn.prcp[i,j]=as.numeric(paste0(data.dv.mvn[data.dv.mvn$DATE==paste0(i+2008,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.wvn.temp=array(NA,dim=c(75,12),dimnames = list(c(paste0("year:",(1:75)+1948)),c(paste0("month:",1:12))))
+season.data.wvn.prcp=array(NA,dim=c(75,12),dimnames = list(c(paste0("year:",(1:75)+1948)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:75){
+  for(j in 1:12){
+    if(j<10){
+      season.data.wvn.temp[i,j]=as.numeric(paste0(data.dv.wvn[data.dv.wvn$DATE==paste0(i+1948,"-0",j),]$TMAX,""))
+      season.data.wvn.prcp[i,j]=as.numeric(paste0(data.dv.wvn[data.dv.wvn$DATE==paste0(i+1948,"-0",j),]$PRCP,""))
+    }else{
+      season.data.wvn.temp[i,j]=as.numeric(paste0(data.dv.wvn[data.dv.wvn$DATE==paste0(i+1948,"-",j),]$TMAX,""))
+      season.data.wvn.prcp[i,j]=as.numeric(paste0(data.dv.wvn[data.dv.wvn$DATE==paste0(i+1948,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.nec.temp=array(NA,dim=c(85,12),dimnames = list(c(paste0("year:",(1:85)+1899)),c(paste0("month:",1:12))))
+season.data.nec.prcp=array(NA,dim=c(85,12),dimnames = list(c(paste0("year:",(1:85)+1899)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:85){
+  for(j in 1:12){
+    if(j<10){
+      season.data.nec.temp[i,j]=as.numeric(paste0(data.dv.nec[data.dv.nec$DATE==paste0(i+1899,"-0",j),]$TMAX,""))
+      season.data.nec.prcp[i,j]=as.numeric(paste0(data.dv.nec[data.dv.nec$DATE==paste0(i+1899,"-0",j),]$PRCP,""))
+    }else{
+      season.data.nec.temp[i,j]=as.numeric(paste0(data.dv.nec[data.dv.nec$DATE==paste0(i+1899,"-",j),]$TMAX,""))
+      season.data.nec.prcp[i,j]=as.numeric(paste0(data.dv.nec[data.dv.nec$DATE==paste0(i+1899,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+mean.na.rm=function(x){mean(x,na.rm = T)}
+
+month.mean.vna.temp=apply(season.data.vna.temp,2,mean.na.rm)
+month.mean.sre.temp=apply(season.data.sre.temp,2,mean.na.rm)
+month.mean.jtc.temp=apply(season.data.jtc.temp,2,mean.na.rm)
+month.mean.gv.temp=apply(season.data.gv.temp,2,mean.na.rm)
+month.mean.co.temp=apply(season.data.co.temp,2,mean.na.rm)
+month.mean.mvn.temp=apply(season.data.mvn.temp,2,mean.na.rm)
+month.mean.wvn.temp=apply(season.data.wvn.temp,2,mean.na.rm)
+month.mean.nec.temp=apply(season.data.nec.temp,2,mean.na.rm)
+
+month.mean.vna.prcp=apply(season.data.vna.prcp,2,mean.na.rm)
+month.mean.sre.prcp=apply(season.data.sre.prcp,2,mean.na.rm)
+month.mean.jtc.prcp=apply(season.data.jtc.prcp,2,mean.na.rm)
+month.mean.gv.prcp=apply(season.data.gv.prcp,2,mean.na.rm)
+month.mean.co.prcp=apply(season.data.co.prcp,2,mean.na.rm)
+month.mean.mvn.prcp=apply(season.data.mvn.prcp,2,mean.na.rm)
+month.mean.wvn.prcp=apply(season.data.wvn.prcp,2,mean.na.rm)
+month.mean.nec.prcp=apply(season.data.nec.prcp,2,mean.na.rm)
+```
+```{r}
+summary.dv=array(NA,dim = c(8,10),dimnames = list(unique(data.dv$NAME),c("annual ave temp","annual cum prcp","spring ave temp","summer ave temp","autumn ave temp","winter ave temp","spring cum prcp","summer cum prcp","autumn cum prcp","winter cum prcp")))
+#summary.albuq
+```
+```{r}
+summary.dv[1,]=c((mean(as.numeric(data.dv.vna$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.vna$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.vna.temp[3:5])-32)*5/9,
+                    (mean(month.mean.vna.temp[6:8])-32)*5/9,
+                    (mean(month.mean.vna.temp[9:11])-32)*5/9,
+                    (mean(month.mean.vna.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.vna.prcp[3:5])*25.4,
+                    sum(month.mean.vna.prcp[6:8])*25.4,
+                    sum(month.mean.vna.prcp[9:11])*25.4,
+                    sum(month.mean.vna.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.dv[2,]=c((mean(as.numeric(data.dv.sre$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.sre$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.sre.temp[3:5])-32)*5/9,
+                    (mean(month.mean.sre.temp[6:8])-32)*5/9,
+                    (mean(month.mean.sre.temp[9:11])-32)*5/9,
+                    (mean(month.mean.sre.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.sre.prcp[3:5])*25.4,
+                    sum(month.mean.sre.prcp[6:8])*25.4,
+                    sum(month.mean.sre.prcp[9:11])*25.4,
+                    sum(month.mean.sre.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.dv[3,]=c((mean(as.numeric(data.dv.jtc$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.jtc$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.jtc.temp[3:5])-32)*5/9,
+                    (mean(month.mean.jtc.temp[6:8])-32)*5/9,
+                    (mean(month.mean.jtc.temp[9:11])-32)*5/9,
+                    (mean(month.mean.jtc.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.jtc.prcp[3:5])*25.4,
+                    sum(month.mean.jtc.prcp[6:8])*25.4,
+                    sum(month.mean.jtc.prcp[9:11])*25.4,
+                    sum(month.mean.jtc.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.dv[4,]=c((mean(as.numeric(data.dv.gv$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.gv$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.gv.temp[3:5])-32)*5/9,
+                    (mean(month.mean.gv.temp[6:8])-32)*5/9,
+                    (mean(month.mean.gv.temp[9:11])-32)*5/9,
+                    (mean(month.mean.gv.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.gv.prcp[3:5])*25.4,
+                    sum(month.mean.gv.prcp[6:8])*25.4,
+                    sum(month.mean.gv.prcp[9:11])*25.4,
+                    sum(month.mean.gv.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.dv[5,]=c((mean(as.numeric(data.dv.co$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.co$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.co.temp[3:5])-32)*5/9,
+                    (mean(month.mean.co.temp[6:8])-32)*5/9,
+                    (mean(month.mean.co.temp[9:11])-32)*5/9,
+                    (mean(month.mean.co.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.co.prcp[3:5])*25.4,
+                    sum(month.mean.co.prcp[6:8])*25.4,
+                    sum(month.mean.co.prcp[9:11])*25.4,
+                    sum(month.mean.co.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.dv[6,]=c((mean(as.numeric(data.dv.mvn$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.mvn$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.mvn.temp[3:5])-32)*5/9,
+                    (mean(month.mean.mvn.temp[6:8])-32)*5/9,
+                    (mean(month.mean.mvn.temp[9:11])-32)*5/9,
+                    (mean(month.mean.mvn.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.mvn.prcp[3:5])*25.4,
+                    sum(month.mean.mvn.prcp[6:8])*25.4,
+                    sum(month.mean.mvn.prcp[9:11])*25.4,
+                    sum(month.mean.mvn.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.dv[7,]=c((mean(as.numeric(data.dv.wvn$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.wvn$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.wvn.temp[3:5])-32)*5/9,
+                    (mean(month.mean.wvn.temp[6:8])-32)*5/9,
+                    (mean(month.mean.wvn.temp[9:11])-32)*5/9,
+                    (mean(month.mean.wvn.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.wvn.prcp[3:5])*25.4,
+                    sum(month.mean.wvn.prcp[6:8])*25.4,
+                    sum(month.mean.wvn.prcp[9:11])*25.4,
+                    sum(month.mean.wvn.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.dv[8,]=c((mean(as.numeric(data.dv.nec$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.nec$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.nec.temp[3:5])-32)*5/9,
+                    (mean(month.mean.nec.temp[6:8])-32)*5/9,
+                    (mean(month.mean.nec.temp[9:11])-32)*5/9,
+                    (mean(month.mean.nec.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.nec.prcp[3:5])*25.4,
+                    sum(month.mean.nec.prcp[6:8])*25.4,
+                    sum(month.mean.nec.prcp[9:11])*25.4,
+                    sum(month.mean.nec.prcp[c(12,1,2)])*25.4
+                    )
+```
+```{r}
+summary.dv
+write.csv(summary.dv,"/Users/jiangyunhui/Downloads/summary.dv.csv")
+```
+
+
+```{r}
+# data.q4=read.csv("https://www.ncei.noaa.gov/orders/cdo/3306145.csv")
+# write.csv(data.q4,"/Users/jiangyunhui/Downloads/3306145.csv")
+```
+
+```{r}
+# run this section to input data
+# data.q4=read.csv("3306145.csv")
+```
+
+```{r}
+unique(data.q4$NAME)
+```
+```{r}
+data.veg.wwp=data.q4[data.q4$NAME=="LAS VEGAS WASTE WATER PLANT, NM US",]
+data.dsrt.rra=data.q4[data.q4$NAME=="DESERT RESORTS REGIONAL AIRPORT, CA US",]
+data.veg.wfo=data.q4[data.q4$NAME=="LAS VEGAS WEATHER FORECAST OFFICE, NV US",]
+data.dsrt.bor=data.q4[data.q4$NAME=="BORREGO DESERT PARK, CA US",]
+data.val.smk=data.q4[data.q4$NAME=="SMOKY VALLEY CARVERS, NV US",]
+data.dsrt.roc=data.q4[data.q4$NAME=="DESERT ROCK AIRPORT, NV US",]
+data.dv.natp=data.q4[data.q4$NAME=="DEATH VALLEY NATIONAL PARK, CA US",]
+data.dsrt.pain=data.q4[data.q4$NAME=="PAINTED DESERT NATIONAL PARK, AZ US",]
+data.veg.nor=data.q4[data.q4$NAME=="NORTH LAS VEGAS, NV US",]
+data.us.pdnp=data.q4.aus.2[data.q4.aus.2$NAME=="PAINTED DESERT NATIONAL PARK, AZ US",]
+```
+
+
+```{r}
+season.data.veg.wwp.temp=array(NA,dim=c(41,12),dimnames = list(c(paste0("year:",(1:41)+1982)),c(paste0("month:",1:12))))
+season.data.veg.wwp.prcp=array(NA,dim=c(41,12),dimnames = list(c(paste0("year:",(1:41)+1982)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:41){
+  for(j in 1:12){
+    if(j<10){
+      season.data.veg.wwp.temp[i,j]=as.numeric(paste0(data.veg.wwp[data.veg.wwp$DATE==paste0(i+1982,"-0",j),]$TMAX,""))
+      season.data.veg.wwp.prcp[i,j]=as.numeric(paste0(data.veg.wwp[data.veg.wwp$DATE==paste0(i+1982,"-0",j),]$PRCP,""))
+    }else{
+      season.data.veg.wwp.temp[i,j]=as.numeric(paste0(data.veg.wwp[data.veg.wwp$DATE==paste0(i+1982,"-",j),]$TMAX,""))
+      season.data.veg.wwp.prcp[i,j]=as.numeric(paste0(data.veg.wwp[data.veg.wwp$DATE==paste0(i+1982,"-",j),]$PRCP,""))
+    }
+  }
+}
+
+```
+```{r}
+season.data.dsrt.rra.temp=array(NA,dim=c(74,12),dimnames = list(c(paste0("year:",(1:74)+1949)),c(paste0("month:",1:12))))
+season.data.dsrt.rra.prcp=array(NA,dim=c(74,12),dimnames = list(c(paste0("year:",(1:74)+1949)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:74){
+  for(j in 1:12){
+    if(j<10){
+      season.data.dsrt.rra.temp[i,j]=as.numeric(paste0(data.dsrt.rra[data.dsrt.rra$DATE==paste0(i+1949,"-0",j),]$TMAX,""))
+      season.data.dsrt.rra.prcp[i,j]=as.numeric(paste0(data.dsrt.rra[data.dsrt.rra$DATE==paste0(i+1949,"-0",j),]$PRCP,""))
+    }else{
+      season.data.dsrt.rra.temp[i,j]=as.numeric(paste0(data.dsrt.rra[data.dsrt.rra$DATE==paste0(i+1949,"-",j),]$TMAX,""))
+      season.data.dsrt.rra.prcp[i,j]=as.numeric(paste0(data.dsrt.rra[data.dsrt.rra$DATE==paste0(i+1949,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.veg.wfo.temp=array(NA,dim=c(28,12),dimnames = list(c(paste0("year:",(1:28)+1995)),c(paste0("month:",1:12))))
+season.data.veg.wfo.prcp=array(NA,dim=c(28,12),dimnames = list(c(paste0("year:",(1:28)+1995)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:28){
+  for(j in 1:12){
+    if(j<10){
+      season.data.veg.wfo.temp[i,j]=as.numeric(paste0(data.veg.wfo[data.veg.wfo$DATE==paste0(i+1995,"-0",j),]$TMAX,""))
+      season.data.veg.wfo.prcp[i,j]=as.numeric(paste0(data.veg.wfo[data.veg.wfo$DATE==paste0(i+1995,"-0",j),]$PRCP,""))
+    }else{
+      season.data.veg.wfo.temp[i,j]=as.numeric(paste0(data.veg.wfo[data.veg.wfo$DATE==paste0(i+1995,"-",j),]$TMAX,""))
+      season.data.veg.wfo.prcp[i,j]=as.numeric(paste0(data.veg.wfo[data.veg.wfo$DATE==paste0(i+1995,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.dsrt.bor.temp=array(NA,dim=c(81,12),dimnames = list(c(paste0("year:",(1:81)+1941)),c(paste0("month:",1:12))))
+season.data.dsrt.bor.prcp=array(NA,dim=c(81,12),dimnames = list(c(paste0("year:",(1:81)+1941)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:81){
+  for(j in 1:12){
+    if(j<10){
+      season.data.dsrt.bor.temp[i,j]=as.numeric(paste0(data.dsrt.bor[data.dsrt.bor$DATE==paste0(i+1941,"-0",j),]$TMAX,""))
+      season.data.dsrt.bor.prcp[i,j]=as.numeric(paste0(data.dsrt.bor[data.dsrt.bor$DATE==paste0(i+1941,"-0",j),]$PRCP,""))
+    }else{
+      season.data.dsrt.bor.temp[i,j]=as.numeric(paste0(data.dsrt.bor[data.dsrt.bor$DATE==paste0(i+1941,"-",j),]$TMAX,""))
+      season.data.dsrt.bor.prcp[i,j]=as.numeric(paste0(data.dsrt.bor[data.dsrt.bor$DATE==paste0(i+1941,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.val.smk.temp=array(NA,dim=c(75,12),dimnames = list(c(paste0("year:",(1:75)+1948)),c(paste0("month:",1:12))))
+season.data.val.smk.prcp=array(NA,dim=c(75,12),dimnames = list(c(paste0("year:",(1:75)+1948)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:75){
+  for(j in 1:12){
+    if(j<10){
+      season.data.val.smk.temp[i,j]=as.numeric(paste0(data.val.smk[data.val.smk$DATE==paste0(i+1948,"-0",j),]$TMAX,""))
+      season.data.val.smk.prcp[i,j]=as.numeric(paste0(data.val.smk[data.val.smk$DATE==paste0(i+1948,"-0",j),]$PRCP,""))
+    }else{
+      season.data.val.smk.temp[i,j]=as.numeric(paste0(data.val.smk[data.val.smk$DATE==paste0(i+1948,"-",j),]$TMAX,""))
+      season.data.val.smk.prcp[i,j]=as.numeric(paste0(data.val.smk[data.val.smk$DATE==paste0(i+1948,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.dsrt.roc.temp=array(NA,dim=c(46,12),dimnames = list(c(paste0("year:",(1:46)+1977)),c(paste0("month:",1:12))))
+season.data.dsrt.roc.prcp=array(NA,dim=c(46,12),dimnames = list(c(paste0("year:",(1:46)+1977)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:46){
+  for(j in 1:12){
+    if(j<10){
+      season.data.dsrt.roc.temp[i,j]=as.numeric(paste0(data.dsrt.roc[data.dsrt.roc$DATE==paste0(i+1977,"-0",j),]$TMAX,""))
+      season.data.dsrt.roc.prcp[i,j]=as.numeric(paste0(data.dsrt.roc[data.dsrt.roc$DATE==paste0(i+1977,"-0",j),]$PRCP,""))
+    }else{
+      season.data.dsrt.roc.temp[i,j]=as.numeric(paste0(data.dsrt.roc[data.dsrt.roc$DATE==paste0(i+1977,"-",j),]$TMAX,""))
+      season.data.dsrt.roc.prcp[i,j]=as.numeric(paste0(data.dsrt.roc[data.dsrt.roc$DATE==paste0(i+1977,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.dv.natp.temp=array(NA,dim=c(63,12),dimnames = list(c(paste0("year:",(1:63)+1960)),c(paste0("month:",1:12))))
+season.data.dv.natp.prcp=array(NA,dim=c(63,12),dimnames = list(c(paste0("year:",(1:63)+1960)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:63){
+  for(j in 1:12){
+    if(j<10){
+      season.data.dv.natp.temp[i,j]=as.numeric(paste0(data.dv.natp[data.dv.natp$DATE==paste0(i+1960,"-0",j),]$TMAX,""))
+      season.data.dv.natp.prcp[i,j]=as.numeric(paste0(data.dv.natp[data.dv.natp$DATE==paste0(i+1960,"-0",j),]$PRCP,""))
+    }else{
+      season.data.dv.natp.temp[i,j]=as.numeric(paste0(data.dv.natp[data.dv.natp$DATE==paste0(i+1960,"-",j),]$TMAX,""))
+      season.data.dv.natp.prcp[i,j]=as.numeric(paste0(data.dv.natp[data.dv.natp$DATE==paste0(i+1960,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.dsrt.pain.temp=array(NA,dim=c(51,12),dimnames = list(c(paste0("year:",(1:51)+1972)),c(paste0("month:",1:12))))
+season.data.dsrt.pain.prcp=array(NA,dim=c(51,12),dimnames = list(c(paste0("year:",(1:51)+1972)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:51){
+  for(j in 1:12){
+    if(j<10){
+      season.data.dsrt.pain.temp[i,j]=as.numeric(paste0(data.dsrt.pain[data.dsrt.pain$DATE==paste0(i+1972,"-0",j),]$TMAX,""))
+      season.data.dsrt.pain.prcp[i,j]=as.numeric(paste0(data.dsrt.pain[data.dsrt.pain$DATE==paste0(i+1972,"-0",j),]$PRCP,""))
+    }else{
+      season.data.dsrt.pain.temp[i,j]=as.numeric(paste0(data.dsrt.pain[data.dsrt.pain$DATE==paste0(i+1972,"-",j),]$TMAX,""))
+      season.data.dsrt.pain.prcp[i,j]=as.numeric(paste0(data.dsrt.pain[data.dsrt.pain$DATE==paste0(i+1972,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.veg.nor.temp=array(NA,dim=c(66,12),dimnames = list(c(paste0("year:",(1:66)+1950)),c(paste0("month:",1:12))))
+season.data.veg.nor.prcp=array(NA,dim=c(66,12),dimnames = list(c(paste0("year:",(1:66)+1950)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:66){
+  for(j in 1:12){
+    if(j<10){
+      season.data.veg.nor.temp[i,j]=as.numeric(paste0(data.veg.nor[data.veg.nor$DATE==paste0(i+1950,"-0",j),]$TMAX,""))
+      season.data.veg.nor.prcp[i,j]=as.numeric(paste0(data.veg.nor[data.veg.nor$DATE==paste0(i+1950,"-0",j),]$PRCP,""))
+    }else{
+      season.data.veg.nor.temp[i,j]=as.numeric(paste0(data.veg.nor[data.veg.nor$DATE==paste0(i+1950,"-",j),]$TMAX,""))
+      season.data.veg.nor.prcp[i,j]=as.numeric(paste0(data.veg.nor[data.veg.nor$DATE==paste0(i+1950,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+
+```{r}
+mean.na.rm=function(x){mean(x,na.rm = T)}
+
+month.mean.veg.wwp.temp=apply(season.data.veg.wwp.temp,2,mean.na.rm)
+month.mean.dsrt.rra.temp=apply(season.data.dsrt.rra.temp,2,mean.na.rm)
+month.mean.veg.wfo.temp=apply(season.data.veg.wfo.temp,2,mean.na.rm)
+month.mean.dsrt.bor.temp=apply(season.data.dsrt.bor.temp,2,mean.na.rm)
+month.mean.val.smk.temp=apply(season.data.val.smk.temp,2,mean.na.rm)
+month.mean.dsrt.roc.temp=apply(season.data.dsrt.roc.temp,2,mean.na.rm)
+month.mean.dv.natp.temp=apply(season.data.dv.natp.temp,2,mean.na.rm)
+month.mean.dsrt.pain.temp=apply(season.data.dsrt.pain.temp,2,mean.na.rm)
+month.mean.veg.nor.temp=apply(season.data.veg.nor.temp,2,mean.na.rm)
+
+
+month.mean.veg.wwp.prcp=apply(season.data.veg.wwp.prcp,2,mean.na.rm)
+month.mean.dsrt.rra.prcp=apply(season.data.dsrt.rra.prcp,2,mean.na.rm)
+month.mean.veg.wfo.prcp=apply(season.data.veg.wfo.prcp,2,mean.na.rm)
+month.mean.dsrt.bor.prcp=apply(season.data.dsrt.bor.prcp,2,mean.na.rm)
+month.mean.val.smk.prcp=apply(season.data.val.smk.prcp,2,mean.na.rm)
+month.mean.dsrt.roc.prcp=apply(season.data.dsrt.roc.prcp,2,mean.na.rm)
+month.mean.dv.natp.prcp=apply(season.data.dv.natp.prcp,2,mean.na.rm)
+month.mean.dsrt.pain.prcp=apply(season.data.dsrt.pain.prcp,2,mean.na.rm)
+month.mean.veg.nor.prcp=apply(season.data.veg.nor.prcp,2,mean.na.rm)
+
+
+```
+```{r}
+summary.q4=array(NA,dim = c(9,10),dimnames = list(unique(data.q4$NAME),c("annual ave temp","annual cum prcp","spring ave temp","summer ave temp","autumn ave temp","winter ave temp","spring cum prcp","summer cum prcp","autumn cum prcp","winter cum prcp")))
+#summary.albuq
+```
+```{r}
+
+summary.q4[1,]=c((mean(as.numeric(data.veg.wwp$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.veg.wwp$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.veg.wwp.temp[3:5])-32)*5/9,
+                    (mean(month.mean.veg.wwp.temp[6:8])-32)*5/9,
+                    (mean(month.mean.veg.wwp.temp[9:11])-32)*5/9,
+                    (mean(month.mean.veg.wwp.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.veg.wwp.prcp[3:5])*25.4,
+                    sum(month.mean.veg.wwp.prcp[6:8])*25.4,
+                    sum(month.mean.veg.wwp.prcp[9:11])*25.4,
+                    sum(month.mean.veg.wwp.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4[2,]=c((mean(as.numeric(data.dsrt.rra$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dsrt.rra$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.dsrt.rra.temp[3:5])-32)*5/9,
+                    (mean(month.mean.dsrt.rra.temp[6:8])-32)*5/9,
+                    (mean(month.mean.dsrt.rra.temp[9:11])-32)*5/9,
+                    (mean(month.mean.dsrt.rra.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.dsrt.rra.prcp[3:5])*25.4,
+                    sum(month.mean.dsrt.rra.prcp[6:8])*25.4,
+                    sum(month.mean.dsrt.rra.prcp[9:11])*25.4,
+                    sum(month.mean.dsrt.rra.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4[3,]=c((mean(as.numeric(data.veg.wfo$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.veg.wfo$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.veg.wfo.temp[3:5])-32)*5/9,
+                    (mean(month.mean.veg.wfo.temp[6:8])-32)*5/9,
+                    (mean(month.mean.veg.wfo.temp[9:11])-32)*5/9,
+                    (mean(month.mean.veg.wfo.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.veg.wfo.prcp[3:5])*25.4,
+                    sum(month.mean.veg.wfo.prcp[6:8])*25.4,
+                    sum(month.mean.veg.wfo.prcp[9:11])*25.4,
+                    sum(month.mean.veg.wfo.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4[4,]=c((mean(as.numeric(data.dsrt.bor$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dsrt.bor$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.dsrt.bor.temp[3:5])-32)*5/9,
+                    (mean(month.mean.dsrt.bor.temp[6:8])-32)*5/9,
+                    (mean(month.mean.dsrt.bor.temp[9:11])-32)*5/9,
+                    (mean(month.mean.dsrt.bor.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.dsrt.bor.prcp[3:5])*25.4,
+                    sum(month.mean.dsrt.bor.prcp[6:8])*25.4,
+                    sum(month.mean.dsrt.bor.prcp[9:11])*25.4,
+                    sum(month.mean.dsrt.bor.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4[5,]=c((mean(as.numeric(data.val.smk$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.val.smk$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.val.smk.temp[3:5])-32)*5/9,
+                    (mean(month.mean.val.smk.temp[6:8])-32)*5/9,
+                    (mean(month.mean.val.smk.temp[9:11])-32)*5/9,
+                    (mean(month.mean.val.smk.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.val.smk.prcp[3:5])*25.4,
+                    sum(month.mean.val.smk.prcp[6:8])*25.4,
+                    sum(month.mean.val.smk.prcp[9:11])*25.4,
+                    sum(month.mean.val.smk.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4[6,]=c((mean(as.numeric(data.dsrt.roc$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dsrt.roc$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.dsrt.roc.temp[3:5])-32)*5/9,
+                    (mean(month.mean.dsrt.roc.temp[6:8])-32)*5/9,
+                    (mean(month.mean.dsrt.roc.temp[9:11])-32)*5/9,
+                    (mean(month.mean.dsrt.roc.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.dsrt.roc.prcp[3:5])*25.4,
+                    sum(month.mean.dsrt.roc.prcp[6:8])*25.4,
+                    sum(month.mean.dsrt.roc.prcp[9:11])*25.4,
+                    sum(month.mean.dsrt.roc.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4[7,]=c((mean(as.numeric(data.dv.natp$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dv.natp$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.dv.natp.temp[3:5])-32)*5/9,
+                    (mean(month.mean.dv.natp.temp[6:8])-32)*5/9,
+                    (mean(month.mean.dv.natp.temp[9:11])-32)*5/9,
+                    (mean(month.mean.dv.natp.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.dv.natp.prcp[3:5])*25.4,
+                    sum(month.mean.dv.natp.prcp[6:8])*25.4,
+                    sum(month.mean.dv.natp.prcp[9:11])*25.4,
+                    sum(month.mean.dv.natp.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4[8,]=c((mean(as.numeric(data.dsrt.pain$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.dsrt.pain$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.dsrt.pain.temp[3:5])-32)*5/9,
+                    (mean(month.mean.dsrt.pain.temp[6:8])-32)*5/9,
+                    (mean(month.mean.dsrt.pain.temp[9:11])-32)*5/9,
+                    (mean(month.mean.dsrt.pain.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.dsrt.pain.prcp[3:5])*25.4,
+                    sum(month.mean.dsrt.pain.prcp[6:8])*25.4,
+                    sum(month.mean.dsrt.pain.prcp[9:11])*25.4,
+                    sum(month.mean.dsrt.pain.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4[9,]=c((mean(as.numeric(data.veg.nor$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.veg.nor$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.veg.nor.temp[3:5])-32)*5/9,
+                    (mean(month.mean.veg.nor.temp[6:8])-32)*5/9,
+                    (mean(month.mean.veg.nor.temp[9:11])-32)*5/9,
+                    (mean(month.mean.veg.nor.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.veg.nor.prcp[3:5])*25.4,
+                    sum(month.mean.veg.nor.prcp[6:8])*25.4,
+                    sum(month.mean.veg.nor.prcp[9:11])*25.4,
+                    sum(month.mean.veg.nor.prcp[c(12,1,2)])*25.4
+                    )
+```
+```{r}
+summary.q4
+write.csv(summary.q4,"/Users/jiangyunhui/Downloads/summary.q4.csv")
+```
+
+```{r}
+# data.q4.aus=read.csv("https://www.ncei.noaa.gov/orders/cdo/3307261.csv")
+# data.q4.aus.2=read.csv("https://www.ncei.noaa.gov/orders/cdo/3307595.csv")
+# write.csv(data.q4.aus,"/Users/jiangyunhui/Downloads/3307261.csv")
+# write.csv(data.q4.aus.2,"/Users/jiangyunhui/Downloads/3307595.csv")
+```
+
+```{r}
+# run this section to input data
+# data.q4.aus=read.csv("3307261.csv")
+# data.q4.aus.2=read.csv("3307595.csv")
+```
+
+```{r}
+unique(data.q4.aus$NAME)
+```
+```{r}
+unique(data.q4.aus.2$NAME)
+```
+
+```{r}
+data.as.bs=data.q4.aus[data.q4.aus$NAME=="BOOYLGOO SPRING, AS",]
+data.as.asa=data.q4.aus[data.q4.aus$NAME=="ALICE SPRINGS AIRPORT, AS",]
+data.as.bhps=data.q4.aus[data.q4.aus$NAME=="BROKEN HILL PATTON STREET, AS",]
+data.as.bhsc=data.q4.aus[data.q4.aus$NAME=="BROKEN HILL STEPHENS CREEK RE, AS",]
+data.as.ma=data.q4.aus[data.q4.aus$NAME=="MILDURA AIRPORT, AS",]
+
+data.as.la=data.q4.aus.2[data.q4.aus.2$NAME=="LEONORA AERO, AS",]
+data.as.mma=data.q4.aus.2[data.q4.aus.2$NAME=="MOUNT MAGNET AERO, AS",]
+data.as.carg=data.q4.aus.2[data.q4.aus.2$NAME=="CARNEGIE, AS",]
+
+```
+```{r}
+season.data.as.bs.temp=array(NA,dim=c(92,12),dimnames = list(c(paste0("year:",(1:92)+1921)),c(paste0("month:",1:12))))
+season.data.as.bs.prcp=array(NA,dim=c(92,12),dimnames = list(c(paste0("year:",(1:92)+1921)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:92){
+  for(j in 1:12){
+    if(j<10){
+      season.data.as.bs.temp[i,j]=as.numeric(paste0(data.as.bs[data.as.bs$DATE==paste0(i+1921,"-0",j),]$TMAX,""))
+      season.data.as.bs.prcp[i,j]=as.numeric(paste0(data.as.bs[data.as.bs$DATE==paste0(i+1921,"-0",j),]$PRCP,""))
+    }else{
+      season.data.as.bs.temp[i,j]=as.numeric(paste0(data.as.bs[data.as.bs$DATE==paste0(i+1921,"-",j),]$TMAX,""))
+      season.data.as.bs.prcp[i,j]=as.numeric(paste0(data.as.bs[data.as.bs$DATE==paste0(i+1921,"-",j),]$PRCP,""))
+    }
+  }
+}
+
+```
+
+```{r}
+season.data.as.asa.temp=array(NA,dim=c(83,12),dimnames = list(c(paste0("year:",(1:83)+1940)),c(paste0("month:",1:12))))
+season.data.as.asa.prcp=array(NA,dim=c(83,12),dimnames = list(c(paste0("year:",(1:83)+1940)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:83){
+  for(j in 1:12){
+    if(j<10){
+      season.data.as.asa.temp[i,j]=as.numeric(paste0(data.as.asa[data.as.asa$DATE==paste0(i+1940,"-0",j),]$TMAX,""))
+      season.data.as.asa.prcp[i,j]=as.numeric(paste0(data.as.asa[data.as.asa$DATE==paste0(i+1940,"-0",j),]$PRCP,""))
+    }else{
+      season.data.as.asa.temp[i,j]=as.numeric(paste0(data.as.asa[data.as.asa$DATE==paste0(i+1940,"-",j),]$TMAX,""))
+      season.data.as.asa.prcp[i,j]=as.numeric(paste0(data.as.asa[data.as.asa$DATE==paste0(i+1940,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.as.bhps.temp=array(NA,dim=c(127,12),dimnames = list(c(paste0("year:",(1:127)+1888)),c(paste0("month:",1:12))))
+season.data.as.bhps.prcp=array(NA,dim=c(127,12),dimnames = list(c(paste0("year:",(1:127)+1888)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:127){
+  for(j in 1:12){
+    if(j<10){
+      season.data.as.bhps.temp[i,j]=as.numeric(paste0(data.as.bhps[data.as.bhps$DATE==paste0(i+1888,"-0",j),]$TMAX,""))
+      season.data.as.bhps.prcp[i,j]=as.numeric(paste0(data.as.bhps[data.as.bhps$DATE==paste0(i+1888,"-0",j),]$PRCP,""))
+    }else{
+      season.data.as.bhps.temp[i,j]=as.numeric(paste0(data.as.bhps[data.as.bhps$DATE==paste0(i+1888,"-",j),]$TMAX,""))
+      season.data.as.bhps.prcp[i,j]=as.numeric(paste0(data.as.bhps[data.as.bhps$DATE==paste0(i+1888,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.as.bhsc.temp=array(NA,dim=c(133,12),dimnames = list(c(paste0("year:",(1:133)+1890)),c(paste0("month:",1:12))))
+season.data.as.bhsc.prcp=array(NA,dim=c(133,12),dimnames = list(c(paste0("year:",(1:133)+1890)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:133){
+  for(j in 1:12){
+    if(j<10){
+      season.data.as.bhsc.temp[i,j]=as.numeric(paste0(data.as.bhsc[data.as.bhsc$DATE==paste0(i+1890,"-0",j),]$TMAX,""))
+      season.data.as.bhsc.prcp[i,j]=as.numeric(paste0(data.as.bhsc[data.as.bhsc$DATE==paste0(i+1890,"-0",j),]$PRCP,""))
+    }else{
+      season.data.as.bhsc.temp[i,j]=as.numeric(paste0(data.as.bhsc[data.as.bhsc$DATE==paste0(i+1890,"-",j),]$TMAX,""))
+      season.data.as.bhsc.prcp[i,j]=as.numeric(paste0(data.as.bhsc[data.as.bhsc$DATE==paste0(i+1890,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.as.ma.temp=array(NA,dim=c(78,12),dimnames = list(c(paste0("year:",(1:78)+1945)),c(paste0("month:",1:12))))
+season.data.as.ma.prcp=array(NA,dim=c(78,12),dimnames = list(c(paste0("year:",(1:78)+1945)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:78){
+  for(j in 1:12){
+    if(j<10){
+      season.data.as.ma.temp[i,j]=as.numeric(paste0(data.as.ma[data.as.ma$DATE==paste0(i+1945,"-0",j),]$TMAX,""))
+      season.data.as.ma.prcp[i,j]=as.numeric(paste0(data.as.ma[data.as.ma$DATE==paste0(i+1945,"-0",j),]$PRCP,""))
+    }else{
+      season.data.as.ma.temp[i,j]=as.numeric(paste0(data.as.ma[data.as.ma$DATE==paste0(i+1945,"-",j),]$TMAX,""))
+      season.data.as.ma.prcp[i,j]=as.numeric(paste0(data.as.ma[data.as.ma$DATE==paste0(i+1945,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.as.la.temp=array(NA,dim=c(17,12),dimnames = list(c(paste0("year:",(1:17)+2006)),c(paste0("month:",1:12))))
+season.data.as.la.prcp=array(NA,dim=c(17,12),dimnames = list(c(paste0("year:",(1:17)+2006)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:17){
+  for(j in 1:12){
+    if(j<10){
+      season.data.as.la.temp[i,j]=as.numeric(paste0(data.as.la[data.as.la$DATE==paste0(i+2006,"-0",j),]$TMAX,""))
+      season.data.as.la.prcp[i,j]=as.numeric(paste0(data.as.la[data.as.la$DATE==paste0(i+2006,"-0",j),]$PRCP,""))
+    }else{
+      season.data.as.la.temp[i,j]=as.numeric(paste0(data.as.la[data.as.la$DATE==paste0(i+2006,"-",j),]$TMAX,""))
+      season.data.as.la.prcp[i,j]=as.numeric(paste0(data.as.la[data.as.la$DATE==paste0(i+2006,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.as.mma.temp=array(NA,dim=c(29,12),dimnames = list(c(paste0("year:",(1:29)+1995)),c(paste0("month:",1:12))))
+season.data.as.mma.prcp=array(NA,dim=c(29,12),dimnames = list(c(paste0("year:",(1:29)+1995)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:29){
+  for(j in 1:12){
+    if(j<10){
+      season.data.as.mma.temp[i,j]=as.numeric(paste0(data.as.mma[data.as.mma$DATE==paste0(i+1995,"-0",j),]$TMAX,""))
+      season.data.as.mma.prcp[i,j]=as.numeric(paste0(data.as.mma[data.as.mma$DATE==paste0(i+1995,"-0",j),]$PRCP,""))
+    }else{
+      season.data.as.mma.temp[i,j]=as.numeric(paste0(data.as.mma[data.as.mma$DATE==paste0(i+1995,"-",j),]$TMAX,""))
+      season.data.as.mma.prcp[i,j]=as.numeric(paste0(data.as.mma[data.as.mma$DATE==paste0(i+1995,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+```{r}
+season.data.as.carg.temp=array(NA,dim=c(82,12),dimnames = list(c(paste0("year:",(1:82)+1941)),c(paste0("month:",1:12))))
+season.data.as.carg.prcp=array(NA,dim=c(82,12),dimnames = list(c(paste0("year:",(1:82)+1941)),c(paste0("month:",1:12))))
+#1953-2022
+for(i in 1:82){
+  for(j in 1:12){
+    if(j<10){
+      season.data.as.carg.temp[i,j]=as.numeric(paste0(data.as.carg[data.as.carg$DATE==paste0(i+1941,"-0",j),]$TMAX,""))
+      season.data.as.carg.prcp[i,j]=as.numeric(paste0(data.as.carg[data.as.carg$DATE==paste0(i+1941,"-0",j),]$PRCP,""))
+    }else{
+      season.data.as.carg.temp[i,j]=as.numeric(paste0(data.as.carg[data.as.carg$DATE==paste0(i+1941,"-",j),]$TMAX,""))
+      season.data.as.carg.prcp[i,j]=as.numeric(paste0(data.as.carg[data.as.carg$DATE==paste0(i+1941,"-",j),]$PRCP,""))
+    }
+  }
+}
+```
+
+```{r}
+mean.na.rm=function(x){mean(x,na.rm = T)}
+
+month.mean.as.bs.temp=apply(season.data.as.bs.temp,2,mean.na.rm)
+month.mean.as.asa.temp=apply(season.data.as.asa.temp,2,mean.na.rm)
+month.mean.as.bhps.temp=apply(season.data.as.bhps.temp,2,mean.na.rm)
+month.mean.as.bhsc.temp=apply(season.data.as.bhsc.temp,2,mean.na.rm)
+month.mean.as.ma.temp=apply(season.data.as.ma.temp,2,mean.na.rm)
+
+month.mean.as.la.temp=apply(season.data.as.la.temp,2,mean.na.rm)
+month.mean.as.mma.temp=apply(season.data.as.mma.temp,2,mean.na.rm)
+month.mean.as.carg.temp=apply(season.data.as.carg.temp,2,mean.na.rm)
+
+
+
+month.mean.as.bs.prcp=apply(season.data.as.bs.prcp,2,mean.na.rm)
+month.mean.as.asa.prcp=apply(season.data.as.asa.prcp,2,mean.na.rm)
+month.mean.as.bhps.prcp=apply(season.data.as.bhps.prcp,2,mean.na.rm)
+month.mean.as.bhsc.prcp=apply(season.data.as.bhsc.prcp,2,mean.na.rm)
+month.mean.as.ma.prcp=apply(season.data.as.ma.prcp,2,mean.na.rm)
+
+month.mean.as.la.prcp=apply(season.data.as.la.prcp,2,mean.na.rm)
+month.mean.as.mma.prcp=apply(season.data.as.mma.prcp,2,mean.na.rm)
+month.mean.as.carg.prcp=apply(season.data.as.carg.prcp,2,mean.na.rm)
+
+```
+```{r}
+summary.q4.as=array(NA,dim = c(8,10),dimnames = list(c(unique(data.q4.aus$NAME),"LEONORA AERO, AS","MOUNT MAGNET AERO, AS","CARNEGIE, AS"),c("annual ave temp","annual cum prcp","spring ave temp","summer ave temp","autumn ave temp","winter ave temp","spring cum prcp","summer cum prcp","autumn cum prcp","winter cum prcp")))
+#summary.albuq
+```
+```{r}
+summary.q4.as[1,]=c((mean(as.numeric(data.as.bs$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.as.bs$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.as.bs.temp[3:5])-32)*5/9,
+                    (mean(month.mean.as.bs.temp[6:8])-32)*5/9,
+                    (mean(month.mean.as.bs.temp[9:11])-32)*5/9,
+                    (mean(month.mean.as.bs.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.as.bs.prcp[3:5])*25.4,
+                    sum(month.mean.as.bs.prcp[6:8])*25.4,
+                    sum(month.mean.as.bs.prcp[9:11])*25.4,
+                    sum(month.mean.as.bs.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4.as[2,]=c((mean(as.numeric(data.as.asa$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.as.asa$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.as.asa.temp[3:5])-32)*5/9,
+                    (mean(month.mean.as.asa.temp[6:8])-32)*5/9,
+                    (mean(month.mean.as.asa.temp[9:11])-32)*5/9,
+                    (mean(month.mean.as.asa.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.as.asa.prcp[3:5])*25.4,
+                    sum(month.mean.as.asa.prcp[6:8])*25.4,
+                    sum(month.mean.as.asa.prcp[9:11])*25.4,
+                    sum(month.mean.as.asa.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4.as[3,]=c((mean(as.numeric(data.as.bhps$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.as.bhps$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.as.bhps.temp[3:5])-32)*5/9,
+                    (mean(month.mean.as.bhps.temp[6:8])-32)*5/9,
+                    (mean(month.mean.as.bhps.temp[9:11])-32)*5/9,
+                    (mean(month.mean.as.bhps.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.as.bhps.prcp[3:5])*25.4,
+                    sum(month.mean.as.bhps.prcp[6:8])*25.4,
+                    sum(month.mean.as.bhps.prcp[9:11])*25.4,
+                    sum(month.mean.as.bhps.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4.as[4,]=c((mean(as.numeric(data.as.bhsc$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.as.bhsc$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.as.bhsc.temp[3:5])-32)*5/9,
+                    (mean(month.mean.as.bhsc.temp[6:8])-32)*5/9,
+                    (mean(month.mean.as.bhsc.temp[9:11])-32)*5/9,
+                    (mean(month.mean.as.bhsc.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.as.bhsc.prcp[3:5])*25.4,
+                    sum(month.mean.as.bhsc.prcp[6:8])*25.4,
+                    sum(month.mean.as.bhsc.prcp[9:11])*25.4,
+                    sum(month.mean.as.bhsc.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4.as[5,]=c((mean(as.numeric(data.as.ma$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.as.ma$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.as.ma.temp[3:5])-32)*5/9,
+                    (mean(month.mean.as.ma.temp[6:8])-32)*5/9,
+                    (mean(month.mean.as.ma.temp[9:11])-32)*5/9,
+                    (mean(month.mean.as.ma.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.as.ma.prcp[3:5])*25.4,
+                    sum(month.mean.as.ma.prcp[6:8])*25.4,
+                    sum(month.mean.as.ma.prcp[9:11])*25.4,
+                    sum(month.mean.as.ma.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4.as[6,]=c((mean(as.numeric(data.as.la$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.as.la$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.as.la.temp[3:5])-32)*5/9,
+                    (mean(month.mean.as.la.temp[6:8])-32)*5/9,
+                    (mean(month.mean.as.la.temp[9:11])-32)*5/9,
+                    (mean(month.mean.as.la.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.as.la.prcp[3:5])*25.4,
+                    sum(month.mean.as.la.prcp[6:8])*25.4,
+                    sum(month.mean.as.la.prcp[9:11])*25.4,
+                    sum(month.mean.as.la.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4.as[7,]=c((mean(as.numeric(data.as.mma$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.as.mma$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.as.mma.temp[3:5])-32)*5/9,
+                    (mean(month.mean.as.mma.temp[6:8])-32)*5/9,
+                    (mean(month.mean.as.mma.temp[9:11])-32)*5/9,
+                    (mean(month.mean.as.mma.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.as.mma.prcp[3:5])*25.4,
+                    sum(month.mean.as.mma.prcp[6:8])*25.4,
+                    sum(month.mean.as.mma.prcp[9:11])*25.4,
+                    sum(month.mean.as.mma.prcp[c(12,1,2)])*25.4
+                    )
+
+summary.q4.as[8,]=c((mean(as.numeric(data.as.carg$TMAX),na.rm = T)-32)*5/9,
+                    mean(as.numeric(data.as.carg$PRCP),na.rm = T)*12*25.4,
+                    (mean(month.mean.as.carg.temp[3:5])-32)*5/9,
+                    (mean(month.mean.as.carg.temp[6:8])-32)*5/9,
+                    (mean(month.mean.as.carg.temp[9:11])-32)*5/9,
+                    (mean(month.mean.as.carg.temp[c(12,1,2)])-32)*5/9,
+                    sum(month.mean.as.carg.prcp[3:5])*25.4,
+                    sum(month.mean.as.carg.prcp[6:8])*25.4,
+                    sum(month.mean.as.carg.prcp[9:11])*25.4,
+                    sum(month.mean.as.carg.prcp[c(12,1,2)])*25.4
+                    )
+```
+```{r}
+summary.q4.as
+write.csv(summary.q4.as,"/Users/jiangyunhui/Downloads/summary.q4.as.csv")
+```
