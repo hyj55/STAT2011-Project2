@@ -1,0 +1,370 @@
+library(xlsx)
+CC<-read.xlsx("CC.xlsx",sheetIndex=1)
+HO<-read.xlsx("HO.xlsx",sheetIndex=1)
+SO<-read.xlsx("SO.xlsx",sheetIndex=1)
+AC<-read.xlsx("AC.xlsx",sheetIndex=1)
+
+#Figure 1 Raw data
+t1<-as.ts(CC$Max.Temp...C.[3193:length(CC$Max.Temp...C.)])
+t2<-as.ts(AC$Max.Temp...C.[757:length(AC$Max.Temp...C.)])
+t3<-as.ts(SO$Max.Temp...C.[2017:length(SO$Max.Temp...C.)])
+t4<-as.ts(HO$Max.Temp...C.)
+t<-cbind(t1,t2,t3,t4)
+matplot(t,type='l',xlab="time",ylab="Max Temp (°C)",col=c(1:4),lty=1:4,main="Figure 1 Raw data (127-377)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+#Figure 2 Annual average temperature
+sum<-0
+i<-1
+count<-0
+list_5<-c()
+while((i+27)<length(CC$Max.Temp...C.)){
+  count<-count+1
+  temp<-0
+  for(m in i:(i+27)){
+    temp<-temp+CC$Max.Temp...C.[m]
+  }
+  sum<-sum+temp 
+  list_5<-c(list_5,temp/28)
+  i<-i+28
+}
+ave<-sum/count/28
+Mean<-mean(list_5)
+SD<-sd(list_5)
+CV<-SD/Mean
+list1_5<-list_5[115:length(list_5)]
+list1_5<-as.ts(list1_5)
+list2_5<-list_5[28:length(list_5)]
+list2_5<-as.ts(list2_5)
+list3_5<-list_5[73:length(list_5)]
+list3_5<-as.ts(list3_5)
+com_5<-cbind(list1_5,list2_5,list3_5,list_5)
+matplot(com_5,type='l',xlab="years",ylab="Temp (°C)",col=c(1:4),lty=1:4,main="Figure 2 Annual average temperature (127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+#Figure 3 Annual maximum temperature
+sum<-0
+i<-1
+temp<-0
+count<-0
+list_3<-c()
+while((i+27)<length(CC$Max.Temp...C.)){
+  count<-count+1
+  temp<-0
+  for(m in i:(i+27)){
+    temp<-max(temp,CC$Max.Temp...C.[m])
+  }
+  sum<-sum+temp
+  list_3<-c(list_3,temp)
+  i<-i+28
+}
+ave<-sum/count
+list1_3<-list_3[115:length(list_3)]
+list1_3<-as.ts(list1_3)
+list2_3<-list_3[28:length(list_3)]
+list2_3<-as.ts(list2_3)
+list3_3<-list_3[73:length(list_3)]
+list3_3<-as.ts(list3_3)
+com_3<-cbind(list1_3,list2_3,list3_3,list_3)
+matplot(com_3,type='l',xlab="years",ylab="Max Temp (°C)",col=c(1:4),lty=1:4,main="Figure 3 Annual maximum temperature (127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+#Figure 4 Annual minimum temperature 
+sum<-0
+i<-1
+count<-0
+list_4<-c()
+while((i+27)<length(CC$Max.Temp...C.)){
+  count<-count+1
+  temp<-100
+  for(m in i:(i+27)){
+    temp<-min(temp,CC$Max.Temp...C.[m])
+  }
+  sum<-sum+temp
+  list_4<-c(list_4,temp)
+  i<-i+28
+}
+ave<-sum/count
+list1_4<-list_4[115:length(list_4)]
+list1_4<-as.ts(list1_4)
+list2_4<-list_4[28:length(list_4)]
+list2_4<-as.ts(list2_4)
+list3_4<-list_4[73:length(list_4)]
+list3_4<-as.ts(list3_4)
+com_4<-cbind(list1_4,list2_4,list3_4,list_4)
+matplot(com_4,type='l',xlab="years",ylab="temp (°C)",col=c(1:4),lty=1:4,main="Figure 4 Annual minimum temperature (127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+
+#Figure 5 Annual maximum temperature difference
+sum<-0
+i<-1
+count<-0
+list_6<-c()
+while((i+27)<length(CC$Max.Temp...C.)){
+  count<-count+1
+  temp1<-0
+  temp2<-100
+  for(m in i:(i+27)){
+    temp1<-max(temp1,CC$Max.Temp...C.[m])
+    temp2<-min(temp2,CC$Max.Temp...C.[m])
+  }
+  sum<-sum+temp1-temp2
+  list_6<-c(list_6,temp1-temp2)
+  i<-i+28
+}
+ave<-sum/count
+list1_6<-list_6[115:length(list_6)]
+list1_6<-as.ts(list1_6)
+list2_6<-list_6[28:length(list_6)]
+list2_6<-as.ts(list2_6)
+list3_6<-list_6[73:length(list_6)]
+list3_6<-as.ts(list3_6)
+com_6<-cbind(list1_6,list2_6,list3_6,list_6)
+matplot(com_6,type='l',xlab="years",ylab="temp (°C)",col=c(1:4),lty=1:4,main="Figure 5 Annual maximum temperature difference (127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+#Figure 6 Annual coefficient of variation of temperature
+i<-1
+list<-rep(0,28)
+count<-0
+sum<-0
+l_7<-c()
+while((i+27)<length(CC$Rainfall..mm.)){
+  for(m in i:(i+27)){
+    list[m-count*28]<-CC$Max.Temp...C.[m]
+  }
+  Mean<-mean(list)
+  SD<-sd(list)
+  CV<-SD/Mean
+  sum<-sum+CV
+  l_7<-c(l_7,CV)
+  count<-count+1
+  list<-rep(0,28)
+  i<-i+28
+}
+ave<-sum/count
+list1_7<-l_7[115:length(l_7)]
+list1_7<-as.ts(list1_7)
+list2_7<-l_7[28:length(l_7)]
+list2_7<-as.ts(list2_7)
+list3_7<-l_7[73:length(l_7)]
+list3_7<-as.ts(list3_7)
+com_7<-cbind(list1_7,list2_7,list3_7,l_7)
+matplot(com_7,type='l',xlab="years",ylab="temp (°C)",col=c(1:4),lty=1:4,main="Figure 6 Annual coefficient of variation of temperature(127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+#CC ave=0.3873415
+#AC ave=0.40075
+#SO ave=0.3944372
+#HO ave=0.3907661
+
+
+#Figure 7-10
+par(mfrow=c(4,1))
+plot.ts(CC$Max.Temp...C.[1:90],main="Figure 7 CC",xlab="time",ylab="temp")
+abline(v=c(1,28,56,84),col="RED")
+abline(v=c(7,14,21,35,42,49,63,70,77),col="BLUE",lty=3)
+plot.ts(AC$Max.Temp...C.[1:90],main="Figure 8 AC",xlab="time",ylab="temp")
+abline(v=c(1,28,56,84),col="RED")
+abline(v=c(7,14,21,35,42,49,63,70,77),col="BLUE",lty=3)
+plot.ts(SO$Max.Temp...C.[1:90],main="Figure 9 SO",xlab="time",ylab="temp")
+abline(v=c(1,28,56,84),col="RED")
+abline(v=c(7,14,21,35,42,49,63,70,77),col="BLUE",lty=3)
+plot.ts(HO$Max.Temp...C.[1:90],main="Figure 10 HO",xlab="time",ylab="temp")
+abline(v=c(1,28,56,84),col="RED")
+abline(v=c(7,14,21,35,42,49,63,70,77),col="BLUE",lty=3)
+
+
+#Figure 11 Raw data
+t1<-as.ts(CC$Rainfall..mm.[3193:length(CC$Rainfall..mm.)])
+t2<-as.ts(AC$Rainfall..mm.[757:length(AC$Rainfall..mm.)])
+t3<-as.ts(SO$Rainfall..mm.[2017:length(SO$Rainfall..mm.)])
+t4<-as.ts(HO$Rainfall..mm.)
+t<-cbind(t1,t2,t3,t4)
+matplot(t,type='l',xlab="time",ylab="Rainfall (mm)",col=c(1:4),lty=1:4,main="Figure 11 Raw data (127-377)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+
+#Figure 12 Annual precipitation
+sum<-0
+i<-1
+count<-0
+list_12<-c()
+while((i+27)<length(CC$Rainfall..mm.)){
+  count<-count+1
+  temp<-0
+  for(m in i:(i+27)){
+    temp<-temp+CC$Rainfall..mm.[m]
+  }
+  list_12<-c(list_12,temp)
+  sum<-sum+temp #temp为每年的降水总量
+  i<-i+28
+}
+ave<-sum/count
+Mean<-mean(list)
+SD<-sd(list)
+CV<-SD/Mean
+list1_12<-list_12[115:length(list_12)]
+list1_12<-as.ts(list1_12)
+list2_12<-list_12[28:length(list_12)]
+list2_12<-as.ts(list2_12)
+list3_12<-list_12[73:length(list_12)]
+list3_12<-as.ts(list3_12)
+com_12<-cbind(list1_12,list2_12,list3_12,list_12)
+matplot(com_12,type='l',xlab="years",ylab="rainfall(mm)",col=c(1:4),lty=1:4,main="Figure 12 Annual precipitation (127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+
+#Figure 13 Annual precipitation days
+sum<-0
+i<-1
+count<-0
+list_8<-c()
+while((i+27)<length(CC$Rainfall..mm.)){
+  count<-count+1
+  temp<-0
+  for(m in i:(i+27)){
+    if(CC$Rainfall..mm.[m]>0)
+    temp<-temp+1
+  }
+  sum<-sum+temp
+  list_8<-c(list_8,temp)
+  i<-i+28
+}
+ave<-sum/count
+list1_8<-list_8[115:length(list_8)]
+list1_8<-as.ts(list1_8)
+list2_8<-list_8[28:length(list_8)]
+list2_8<-as.ts(list2_8)
+list3_8<-list_8[73:length(list_8)]
+list3_8<-as.ts(list3_8)
+com_8<-cbind(list1_8,list2_8,list3_8,list_8)
+matplot(com_8,type='l',xlab="years",ylab="rainfall(mm)",col=c(1:4),lty=1:4,main="Figure 13 Annual precipitation days (127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+#Figure 14 Annual maximum number of consecutive days without rain
+sum<-0
+sum2<-0
+i<-1
+count<-0
+list_9<-c()
+while((i+27)<length(CC$Rainfall..mm.)){
+  count<-count+1
+  record<-0
+  record2<-0
+  temp<-0
+  TT<-0
+  for(m in i:(i+27)){
+    if(CC$Rainfall..mm.[m]==0){
+      temp<-temp+1
+      TT<-TT+CC$Max.Temp...C.[m]}
+    else if(CC$Rainfall..mm.[m]>0){
+      temp<-0
+      TT<-0
+    }
+    if(record<temp) record2<-TT #sum up the consecutive temperature with zero rainfall
+    record<-max(record,temp)
+  }
+  aveT<-record2/record
+  sum<-sum+record
+  list_9<-c(list_9,record)
+  sum2<-sum2+aveT
+  i<-i+28
+}
+ave<-sum/count
+ave2<-sum2/count
+list1_9<-list_9[115:length(list_9)]
+list1_9<-as.ts(list1_9)
+list2_9<-list_9[28:length(list_9)]
+list2_9<-as.ts(list2_9)
+list3_9<-list_9[73:length(list_9)]
+list3_9<-as.ts(list3_9)
+com_9<-cbind(list1_9,list2_9,list3_9,list_9)
+matplot(com_9,type='l',xlab="years",ylab="rainfall(mm)",col=c(1:4),lty=1:4,main="Figure 14 Annual maximum number of consecutive days without rain (127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+
+#Figure 15 Annual maximum number of consecutive rainy days
+sum<-0
+sum2<-0
+i<-1
+count<-0
+list_10<-c()
+while((i+27)<length(CC$Rainfall..mm.)){
+  count<-count+1
+  record<-0
+  record2<-0
+  temp<-0
+  TT<-0
+  for(m in i:(i+27)){
+    if(CC$Rainfall..mm.[m]>0){
+      temp<-temp+1
+      TT<-TT+CC$Max.Temp...C.[m]}
+    else if(CC$Rainfall..mm.[m]==0){
+      temp<-0
+      TT<-0
+    }
+    if(record<temp) record2<-TT #sum up the consecutive temperature with non-zero rainfall
+    record<-max(record,temp)
+  }
+  aveT<-record2/record #calculate average temperature correspondingly in a year
+  sum<-sum+record
+  list_10<-c(list_10,record)
+  sum2<-sum2+aveT
+  i<-i+28
+}
+ave<-sum/count
+ave2<-sum2/count
+list1_10<-list_10[115:length(list_10)]
+list1_10<-as.ts(list1_10)
+list2_10<-list_10[28:length(list_10)]
+list2_10<-as.ts(list2_10)
+list3_10<-list_10[73:length(list_10)]
+list3_10<-as.ts(list3_10)
+com_10<-cbind(list1_10,list2_10,list3_10,list_10)
+matplot(com_10,type='l',xlab="years",ylab="rainfall(mm)",col=c(1:4),lty=1:4,main="Figure 15 Annual maximum number of consecutive rainy days (127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
+
+#Figure 16 Annual coefficient of variation of rainfall
+i<-1
+list<-rep(0,28)
+count<-0
+sum<-0
+l_11<-c()
+while((i+27)<length(CC$Rainfall..mm.)){
+  for(m in i:(i+27)){
+    list[m-count*28]<-CC$Rainfall..mm.[m]
+  }
+  Mean<-mean(list)
+  SD<-sd(list)
+  CV<-SD/Mean
+  sum<-sum+CV
+  l_11<-c(l_11,CV)
+  count<-count+1
+  list<-rep(0,28)
+  i<-i+28
+}
+ave<-sum/count
+list1_11<-l_11[115:length(l_11)]
+list1_11<-as.ts(list1_11)
+list2_11<-l_11[28:length(l_11)]
+list2_11<-as.ts(list2_11)
+list3_11<-l_11[73:length(l_11)]
+list3_11<-as.ts(list3_11)
+com_11<-cbind(list1_11,list2_11,list3_11,l_11)
+matplot(com_11,type='l',xlab="years",ylab="Rainfall (mm)",col=c(1:4),lty=1:4,main="Figure 16 Annual coefficient of variation of rainfall(127-337)")
+legend("topleft",legend=c("CC","AC","SO","HO"),col=c(1:4),lty=1:4)
+grid()
+
